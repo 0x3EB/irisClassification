@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CC8E5DE2-4F85-4C9A-A276-20089C69FF67}</ProjectGuid>
+    <ProjectGuid>{EB9E7D05-5C35-4C15-86BC-C0D6FF8455D4}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>IrisClassifcation</RootNamespace>
-    <AssemblyName>IrisClassifcation</AssemblyName>
+    <RootNamespace>iris</RootNamespace>
+    <AssemblyName>iris</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,8 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Node.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Top.cs" />
+    <Compile Include="Tree.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

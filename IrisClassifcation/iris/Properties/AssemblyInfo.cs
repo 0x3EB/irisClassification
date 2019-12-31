@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Les informations générales relatives à un assembly dépendent de
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: AssemblyTitle("IrisClassifcation")]
+[assembly: AssemblyTitle("iris")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IrisClassifcation")]
+[assembly: AssemblyProduct("iris")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Le GUID suivant est pour l'ID de la typelib si ce projet est exposé à COM
-[assembly: Guid("cc8e5de2-4f85-4c9a-a276-20089c69ff67")]
+[assembly: Guid("eb9e7d05-5c35-4c15-86bc-c0d6ff8455d4")]
 
 // Les informations de version pour un assembly se composent des quatre valeurs suivantes :
 //
