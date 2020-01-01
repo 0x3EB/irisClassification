@@ -185,5 +185,36 @@ namespace iris
                 return 0;
             }
         }
+
+        private Boolean TabSameValue(T[] tab)
+        {
+            for (int i = 0; i < tab.Length - 1; i++)
+            {
+                return tab[i] == tab[i + 1];
+            }
+        }
+
+
+        public double median(double[] tabVal)
+        {
+            double[] ascTab = Array.Sort(tabVal);
+            if (ascTab.Count < 2 || TabSameValue(ascTab))
+            {
+                return null;
+            }
+            else if (ascTab.Count % 2 != 0)
+            {
+                int index = (ascTab.Count + 1) / 2;
+                if (ascTab.Max() != ascTab[index])
+                    return ascTab[index];
+                return ascTab[index - 1];
+            }
+            else
+            {
+                int index1 = (ascTab.Count) / 2;
+                int index2 = (ascTab.Count / 2) + 1;
+                return (ascTab[index1] + ascTab[index2]) / 2;
+            }
+        }
     }
 }
