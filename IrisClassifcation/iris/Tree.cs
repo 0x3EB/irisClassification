@@ -186,34 +186,35 @@ namespace iris
             }
         }
 
-        private Boolean TabSameValue(T[] tab)
+        private Boolean TabSameValue(double[] tab)
         {
             for (int i = 0; i < tab.Length - 1; i++)
             {
                 return tab[i] == tab[i + 1];
             }
+            return false;
         }
 
 
         public double median(double[] tabVal)
         {
-            double[] ascTab = Array.Sort(tabVal);
-            if (ascTab.Count < 2 || TabSameValue(ascTab))
+            Array.Sort(tabVal);
+            if (tabVal.Length < 2 || TabSameValue(tabVal))
             {
-                return null;
+                return 0;
             }
-            else if (ascTab.Count % 2 != 0)
+            else if (tabVal.Length % 2 != 0)
             {
-                int index = (ascTab.Count + 1) / 2;
-                if (ascTab.Max() != ascTab[index])
-                    return ascTab[index];
-                return ascTab[index - 1];
+                int index = (tabVal.Length + 1) / 2;
+                if (tabVal.Max() != tabVal[index])
+                    return tabVal[index];
+                return tabVal[index - 1];
             }
             else
             {
-                int index1 = (ascTab.Count) / 2;
-                int index2 = (ascTab.Count / 2) + 1;
-                return (ascTab[index1] + ascTab[index2]) / 2;
+                int index1 = tabVal.Length / 2;
+                int index2 = (tabVal.Length / 2) + 1;
+                return (tabVal[index1] + tabVal[index2]) / 2;
             }
         }
     }
