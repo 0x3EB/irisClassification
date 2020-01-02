@@ -40,7 +40,9 @@ namespace iris
             Console.Write(ab.NbLeaf(ab.Root));
             Console.Write("\nHauteur arbre racine : ");
             Console.Write(ab.Height(ab.Root));
-            Console.ReadKey();
+            readFile r = new readFile();
+            Console.WriteLine("test "+r.GetFile(121,5)[0,0]);
+            Console.ReadLine();
         }
     }
 }
