@@ -59,7 +59,7 @@ namespace iris
                 {
                     double numb = 0.0;
                     if (col.Trim().Contains(".") || col.Trim().Contains(","))
-                        numb = double.Parse(col.Trim().Replace('.', ','));
+                        numb = double.Parse(col.Trim());
                     else
                     {
                         try
