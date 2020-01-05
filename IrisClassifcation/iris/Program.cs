@@ -1,52 +1,71 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace iris
 {
-    internal class Program
+    class Program
     {
+        private static int _yValue;
+        private static int _minAccuracy;
+        private static int _maxAccuracy;
+        private static int _minIndividuals;
+        private static int _maxTreeSize;
         private const string MenuString = "(1) : Display tree height\n" +
                                           "(2) : Display tree width\n" +
-                                          "(3) : Display tree\n" +
-                                          "(4) : Display leafs\n" +
-                                          "(5) : Predict\n" +
-                                          "(0) : Exit";
+                                          "(3) : Display tree";
 
         private static void Main(string[] args)
         {
-            var file = Path.Combine(Directory.GetCurrentDirectory(), "iris.txt");
-            var model = new Model(file, 2);
-            model.AskParameters(true);
-            //model.AskParameters();
-            model.Build();
-            var exit = false;
+            // AskUserValues();
+            // var choice = CheckInt(min: 1, max: 3, err: "Wrong choice", hook: () => Console.WriteLine(MenuString));
+            AskTestIris();
+        }
+
+        private static void AskUserValues()
+        {
+            Console.WriteLine("Y value to predict?");
+            _yValue = CheckInt(positive:true, err:"Enter positive number");
+            Console.WriteLine("Minimum accuracy?");
+            _minAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage");
+            Console.WriteLine("Maximum accuracy?");
+            _maxAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage");
+            Console.WriteLine("Minimum number of individuals?");
+            _minIndividuals = CheckInt(positive:true, err:"Enter positive number");
+            Console.WriteLine("Maximum tree size?");
+            _maxTreeSize = CheckInt(positive:true, err:"Enter positive number");
+        }
+        
+        private static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, Action hook=null)
+        {
             do
             {
-                var choice = Model.CheckInt("Wrong choice", 0, 5, message: MenuString);
-                switch (choice)
+                hook?.Invoke();
+                var res = Convert.ToInt32(Console.ReadLine());
+                if ((positive && res < 0) || (negative && res > 0) ||
+                    ((!positive && !negative) && (res < min || res > max)))
                 {
-                    case 0:
-                        exit = true;
-                        break;
-                    case 1:
-                        model.DisplayTreeHeight();
-                        break;
-                    case 2:
-                        model.DisplayTreeWidth();
-                        break;
-                    case 3:
-                        model.DisplayTree(1);
-                        break;
-                    case 4:
-                        model.DisplayLeafs();
-                        break;
-                    case 5:
-                        model.DisplayPredict(Model.AskTestIris());
-                        break;
-                    default:
-                        exit = true;
-                        break;
+                    Console.WriteLine(err);
+                    continue;
                 }
-            } while (!exit);
+                return res;
+            } while (true);
+        }
+
+        private static double[] AskTestIris()
+        {
+            var features = Enum.GetNames(typeof(IrisFeatures));
+            var iris = new double[features.Length];
+            for (var i = 0; i<features.Length; ++i)
+            {
+                var name = features[i];
+                iris[i] = CheckInt(positive: true,
+                    err: "Enter a positive number",
+                    hook: () => Console.WriteLine("Enter iris " + name));
+            }
+            return iris;
         }
     }
 }

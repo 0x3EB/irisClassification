@@ -44,9 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IrisFeatures.cs" />
-    <Compile Include="IrisTypeNotSetException.cs" />
-    <Compile Include="Model.cs" />
-    <Compile Include="File.cs" />
+    <Compile Include="readFile.cs" />
     <Compile Include="ResearchTree.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Program.cs" />
