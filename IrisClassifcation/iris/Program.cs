@@ -8,7 +8,7 @@ namespace iris
 {
     class Program
     {
-        private static int _yValue;
+        private static int _irisType;
         private static int _minAccuracy;
         private static int _maxAccuracy;
         private static int _minIndividuals;
@@ -24,10 +24,10 @@ namespace iris
             AskTestIris();
         }
 
-        private static void AskUserValues()
+        private static void AskParameters()
         {
             Console.WriteLine("Y value to predict?");
-            _yValue = CheckInt(positive:true, err:"Enter positive number");
+            _irisType = CheckInt(positive:true, err:"Enter positive number");
             Console.WriteLine("Minimum accuracy?");
             _minAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage");
             Console.WriteLine("Maximum accuracy?");
@@ -38,11 +38,11 @@ namespace iris
             _maxTreeSize = CheckInt(positive:true, err:"Enter positive number");
         }
         
-        private static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, Action hook=null)
+        private static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, Action message=null)
         {
             do
             {
-                hook?.Invoke();
+                message?.Invoke();
                 var res = Convert.ToInt32(Console.ReadLine());
                 if ((positive && res < 0) || (negative && res > 0) ||
                     ((!positive && !negative) && (res < min || res > max)))
@@ -63,7 +63,7 @@ namespace iris
                 var name = features[i];
                 iris[i] = CheckInt(positive: true,
                     err: "Enter a positive number",
-                    hook: () => Console.WriteLine("Enter iris " + name));
+                    message: () => Console.WriteLine("Enter iris " + name));
             }
             return iris;
         }
