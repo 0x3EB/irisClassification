@@ -1,118 +1,117 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace iris
 {
     public class Tree<T>
     {
+        private Node<T> root;
+
         public Tree(Node<T> aa)
         {
-            Root = aa;
+            this.root = aa;
         }
-
         public Tree()
         {
-            Root = null;
+            this.root = null;
         }
-
-        public Node<T> Root { get; }
-
-        public Node<T> CreateNode(T[,] val)
+        public Node<T> Root
         {
-            return new Node<T>(val, null, null);
+            get { return root; }
+            set { root = value; }
         }
+        public Node<T> CreateNode(T val) => new Node<T>(val, null, null);
 
         public bool AddLChild(Node<T> parent, Node<T> child)
         {
-            var association = false;
+            bool association = false;
             if (parent != null && child != null)
-                if (parent.LChild == null)
+            {
+                if (parent.Lchild == null)
                 {
-                    parent.LChild = child;
+                    parent.Lchild = child;
                     association = true;
                 }
-
+            }
             return association;
         }
-
         public bool AddRChild(Node<T> parent, Node<T> child)
         {
-            var association = false;
+            bool association = false;
             if (parent != null && child != null)
-                if (parent.RChild == null)
+            {
+                if (parent.Rchild == null)
                 {
-                    parent.RChild = child;
+                    parent.Rchild = child;
                     association = true;
                 }
-
+            }
             return association;
         }
-
-        public bool IsLeafNode(Node<double> node)
+        public bool isLeafNode(Node<T> node)
         {
-            var leaf = false;
+            bool leaf = false;
             if (node != null)
-                if (node.RChild == null && node.LChild == null)
+            {
+                if (node.Rchild == null && node.Lchild == null)
+                {
                     leaf = true;
-
+                }
+            }
             return leaf;
         }
-
         public void PrefixPrint(Node<T> node)
         {
             if (node != null)
             {
-                Console.Write(node.Array + " ");
-                PrefixPrint(node.LChild);
-                PrefixPrint(node.RChild);
+                Console.Write(node.Value + " ");
+                PrefixPrint(node.Lchild);
+                PrefixPrint(node.Rchild);
             }
         }
-
         public void InfixPrint(Node<T> node)
         {
             if (node != null)
             {
-                InfixPrint(node.LChild);
-                Console.Write(node.Array + " ");
-                InfixPrint(node.RChild);
+                InfixPrint(node.Lchild);
+                Console.Write(node.Value + " ");
+                InfixPrint(node.Rchild);
             }
         }
-
         public void PostfixPrint(Node<T> node)
         {
             if (node != null)
             {
-                PostfixPrint(node.LChild);
-                PostfixPrint(node.RChild);
-                Console.Write(node.Array + " ");
+                PostfixPrint(node.Lchild);
+                PostfixPrint(node.Rchild);
+                Console.Write(node.Value + " ");
             }
         }
-
-        public void HierarchyPrint(Node<double> node, int gap, Func<Node<double>, double> fnAccuracy)
+        public void HierarchyPrint(Node<T> node, int gap)
         {
-            for (var i = 0; i < gap; i++) Console.Write(" ");
 
+            for (int i = 0; i < gap; i++)
+            {
+                Console.Write(" ");
+            }
             if (node != null)
             {
                 if (gap != 0)
                 {
-                    if (node.Array != null)
-                    {
-                        var median = Model.CorrectedMedian(Model.GetColumn(node.Array, node.DivisionVar));
-                        Console.WriteLine("|- Accuracy : " + fnAccuracy(node) + " / Individuals count :" +
-                                          node.Array.GetLength(0) + " / X" + node.DivisionVar +
-                                          Model.CharOfOperation(median, node) + median);
-                    }
+                    Console.WriteLine("|-" + node.Value);
                 }
                 else
                 {
-                    Console.WriteLine(fnAccuracy(node));
+                    Console.WriteLine(node.Value);
                 }
-
-                if (!IsLeafNode(node))
+                if (!isLeafNode(node))
                 {
                     gap++;
-                    HierarchyPrint(node.LChild, gap, fnAccuracy);
-                    HierarchyPrint(node.RChild, gap, fnAccuracy);
+                    HierarchyPrint(node.Lchild, gap);
+                    HierarchyPrint(node.Rchild, gap);
                 }
             }
             else
@@ -120,62 +119,71 @@ namespace iris
                 Console.WriteLine("|-X");
             }
         }
-
-
-        public static void Print2DArrays(T[,] tab)
-        {
-            for (var i = 0; i < tab.GetLength(0); i++)
-            {
-                for (var j = 0; j < tab.GetLength(1); j++) Console.Write(tab[i, j]);
-
-                Console.Write(Environment.NewLine + Environment.NewLine);
-            }
-        }
-
         public int NbChildren(Node<T> parent)
         {
-            var nb = 0;
+            int nb = 0;
             if (parent != null)
             {
-                if (parent.LChild != null) nb++;
-
-                if (parent.RChild != null) nb++;
+                if (parent.Lchild != null)
+                {
+                    nb++;
+                }
+                if (parent.Rchild != null)
+                {
+                    nb++;
+                }
             }
-
             return nb;
         }
-
         public int NbDescendant(Node<T> parent)
         {
             if (parent != null)
-                return NbChildren(parent) + NbDescendant(parent.RChild) + NbDescendant(parent.LChild);
-            return 0;
+            {
+                return NbChildren(parent) + NbDescendant(parent.Rchild) + NbDescendant(parent.Lchild);
+            }
+            else
+            {
+                return 0;
+            }
         }
-
-        public int NbLeaf(Node<double> parent)
+        public int NbLeaf(Node<T> parent)
         {
-            if (IsLeafNode(parent)) return 1;
-
+            if (isLeafNode(parent))
+            {
+                return 1;
+            }
             if (parent != null)
-                return NbLeaf(parent.RChild) + NbLeaf(parent.LChild);
-            return 0;
+            {
+                return NbLeaf(parent.Rchild) + NbLeaf(parent.Lchild);
+            }
+            else
+            {
+                return 0;
+            }
         }
-
-        private int Max(int a, int b)
+        public int Max(int a, int b)
         {
-            var max = a;
-            if (a < b) max = b;
-
+            int max = a;
+            if (a < b)
+            {
+                max = b;
+            }
             return max;
         }
-
-        public int Height(Node<double> node)
+        public int Height(Node<T> node)
         {
-            if (IsLeafNode(node)) return 1;
-
+            if (isLeafNode(node))
+            {
+                return 1;
+            }
             if (node != null)
-                return 1 + Max(Height(node.LChild), Height(node.RChild));
-            return 0;
+            {
+                return 1 + Max(Height(node.Lchild), Height(node.Rchild));
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }
