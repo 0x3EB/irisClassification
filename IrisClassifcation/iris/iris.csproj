@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IrisFeatures.cs" />
     <Compile Include="readFile.cs" />
     <Compile Include="ResearchTree.cs" />
     <Compile Include="Node.cs" />

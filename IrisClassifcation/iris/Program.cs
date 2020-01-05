@@ -20,7 +20,8 @@ namespace iris
         private static void Main(string[] args)
         {
             // AskUserValues();
-            var choice = CheckInt(min: 1, max: 3, err: "Wrong choice", hook: () => Console.WriteLine(MenuString));
+            // var choice = CheckInt(min: 1, max: 3, err: "Wrong choice", hook: () => Console.WriteLine(MenuString));
+            AskTestIris();
         }
 
         private static void AskUserValues()
@@ -52,6 +53,19 @@ namespace iris
                 return res;
             } while (true);
         }
-        
+
+        private static double[] AskTestIris()
+        {
+            var features = Enum.GetNames(typeof(IrisFeatures));
+            var iris = new double[features.Length];
+            for (var i = 0; i<features.Length; ++i)
+            {
+                var name = features[i];
+                iris[i] = CheckInt(positive: true,
+                    err: "Enter a positive number",
+                    hook: () => Console.WriteLine("Enter iris " + name));
+            }
+            return iris;
+        }
     }
 }
