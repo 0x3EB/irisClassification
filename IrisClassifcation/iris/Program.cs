@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,20 +9,25 @@ namespace iris
 {
     class Program
     {
-        private static int _irisType;
-        private static int _minAccuracy;
-        private static int _maxAccuracy;
-        private static int _minIndividuals;
-        private static int _maxTreeSize;
+        // Default values
+        private static int _irisType = 2;
+        private static int _minAccuracy = 10;
+        private static int _maxAccuracy = 95;
+        private static int _minIndividuals = 65;
+        private static int _maxTreeSize = 300;
         private const string MenuString = "(1) : Display tree height\n" +
                                           "(2) : Display tree width\n" +
                                           "(3) : Display tree";
 
         private static void Main(string[] args)
         {
-            // AskUserValues();
+            // AskParameters();
             // var choice = CheckInt(min: 1, max: 3, err: "Wrong choice", hook: () => Console.WriteLine(MenuString));
-            AskTestIris();
+            // AskTestIris();
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "iris.txt");
+            var r = new readFile(path);
+            Console.WriteLine("test "+r.GetFile(121,5)[2,0]);
+            Console.ReadLine();
         }
 
         private static void AskParameters()
