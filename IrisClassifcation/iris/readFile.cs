@@ -47,11 +47,11 @@ namespace iris
             return Convert.ToInt32(getFirstLine().Substring(firstSpaceIndex));
         }
 
-        public double[,] GetFile(int x, int y)
+        public double[,] GetFile()
         {
             String input = File.ReadAllText(this.fileName);
             int i = 0, j = 0;
-            double[,] result = new double[x, y];
+            double[,] result = new double[getNbLine(),getNbCol()];
             foreach (var row in input.Split('\n'))
             {
                 j = 0;
@@ -86,7 +86,7 @@ namespace iris
             double[] vals = new double[getNbLine()];
             for (int i = 0; i < getNbLine() - 1; i++)
             {
-                vals[i] = GetFile(getNbLine(), getNbCol())[i, col];
+                vals[i] = GetFile()[i, col];
             }
             return vals;
         }
