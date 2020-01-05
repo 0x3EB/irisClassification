@@ -35,14 +35,15 @@ namespace iris
             return File.ReadLines(this.fileName).First();
         }
         public int getNbLine() {
-            
-            return Convert.ToInt32(getFirstLine().IndexOf(" "));
+
+            var firstSpaceIndex = getFirstLine().IndexOf(" ");
+            return Convert.ToInt32(getFirstLine().Substring(0, firstSpaceIndex))+1;
         }
 
         public int getNbCol()
         {
             var firstSpaceIndex = getFirstLine().IndexOf(" ");
-            return Convert.ToInt32(getFirstLine().Substring(0, firstSpaceIndex));
+            return Convert.ToInt32(getFirstLine().Substring(firstSpaceIndex));
         }
             
         public double[,] GetFile(int x, int y)
@@ -56,7 +57,6 @@ namespace iris
                 foreach (var col in row.Trim().Split(' '))
                 {
                     double numb = 0.0;
-                    Console.WriteLine(col.Trim());
                     if (col.Trim().Contains(".") || col.Trim().Contains(","))
                         numb = double.Parse(col.Trim().Replace('.', ','));
                     else
@@ -66,8 +66,7 @@ namespace iris
                             numb = double.Parse(col.Trim());
                         }catch (Exception ex)
                         {
-                            Console.WriteLine("mauvaise instruction" + col.Trim());
-                            Console.WriteLine(ex.ToString());
+                            
                         }
                     }
                     if (col.Trim() != "" && col.Trim() != " " && col.Trim()!=null)
@@ -80,6 +79,16 @@ namespace iris
                 i++;
             }
             return result;
+        }
+
+        public double[] getDoubleCol(int col)
+        {
+            double[] vals = new double[getNbLine()];
+            for (int i = 0; i < getNbLine() - 1; i++)
+            {
+                vals[i] = GetFile(getNbLine(), getNbCol())[i, col];
+            }
+            return vals;
         }
     }
 }
