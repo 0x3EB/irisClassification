@@ -26,23 +26,21 @@ namespace iris
 
         private static void AskParameters()
         {
-            Console.WriteLine("Y value to predict?");
-            _irisType = CheckInt(positive:true, err:"Enter positive number");
-            Console.WriteLine("Minimum accuracy?");
-            _minAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage");
-            Console.WriteLine("Maximum accuracy?");
-            _maxAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage");
-            Console.WriteLine("Minimum number of individuals?");
-            _minIndividuals = CheckInt(positive:true, err:"Enter positive number");
-            Console.WriteLine("Maximum tree size?");
-            _maxTreeSize = CheckInt(positive:true, err:"Enter positive number");
+            _irisType = CheckInt(positive:true, err:"Enter positive number", message:"Y value to predict?");
+            _minAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage", message:"Minimum accuracy?");
+            _maxAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage", message:"Maximum accuracy?");
+            _minIndividuals = CheckInt(positive:true, err:"Enter positive number", message:"Minimum number of individuals?");
+            _maxTreeSize = CheckInt(positive:true, err:"Enter positive number", message:"Maximum tree size?");
         }
         
-        private static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, Action message=null)
+        private static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, string message=null)
         {
             do
             {
-                message?.Invoke();
+                if (message != null)
+                {
+                    Console.WriteLine(message);
+                }
                 var res = Convert.ToInt32(Console.ReadLine());
                 if ((positive && res < 0) || (negative && res > 0) ||
                     ((!positive && !negative) && (res < min || res > max)))
@@ -63,7 +61,7 @@ namespace iris
                 var name = features[i];
                 iris[i] = CheckInt(positive: true,
                     err: "Enter a positive number",
-                    message: () => Console.WriteLine("Enter iris " + name));
+                    message: "Enter iris " + name);
             }
             return iris;
         }
