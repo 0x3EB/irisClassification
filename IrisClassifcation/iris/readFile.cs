@@ -50,8 +50,10 @@ namespace iris
         public double[,] GetFile()
         {
             String input = File.ReadAllText(this.fileName);
+            // Remove the first line, as it's not part of the sample
+            input = input.Substring(input.IndexOf('\n') + 1);;
             int i = 0, j = 0;
-            double[,] result = new double[getNbLine(),getNbCol()];
+            double[,] result = new double[getNbLine() - 1, getNbCol()];
             foreach (var row in input.Split('\n'))
             {
                 j = 0;
