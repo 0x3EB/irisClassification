@@ -27,6 +27,11 @@ namespace iris
             var path = Path.Combine(Directory.GetCurrentDirectory(), "iris.txt");
             var r = new readFile(path);
             Console.WriteLine("test "+r.GetFile(121,5)[2,0]);
+            Tree<double> ab = new Tree<double>();
+            
+            Node<double> n1 = new Node<double>(1, null, null);
+            Console.WriteLine(ab.Height(n1));
+            Console.WriteLine(IsSampleDiv(ab, _maxTreeSize, n1, _minIndividuals, r.getNbLine(), _maxAccuracy, _minAccuracy, _irisType, r));
             Console.ReadLine();
         }
 
@@ -70,6 +75,41 @@ namespace iris
                     message: "Enter iris " + name);
             }
             return iris;
+        }
+
+        private static Boolean IsSampleDiv(Tree<double> tree, int maxTreeSize, Node<double> node, int nbMinIndivuals, int nbIndivuals, int maxAccuracy, int minAccuracy, int irisType, readFile r)
+        {
+            if (!IsMaxHeightReached(tree, maxTreeSize, node))
+                return false;
+            if (!MoreIndividuals(nbMinIndivuals, nbIndivuals))
+                return false;
+            if (!SampleAccuracy(maxAccuracy, minAccuracy, irisType, r))
+                return false;
+            return true;
+        }
+
+        private static Boolean IsMaxHeightReached(Tree<double> tree, int maxTreeSize, Node<double> node)
+        {
+            return tree.Height(node) < maxTreeSize;
+        }
+
+        private static Boolean MoreIndividuals(int nbMinIndivuals, int nbIndivuals)
+        {
+            return nbIndivuals > nbMinIndivuals;
+        }
+
+        private static Boolean SampleAccuracy(int maxAccuracy, int minAccuracy, int irisType, readFile r)
+        {
+            Convert.ToDouble(irisType);
+            double[] tabIrisType = r.getDoubleCol(0);
+            int nbIrisType = 0;
+            for (int i=0;i<tabIrisType.Length-1;i++)
+            {
+                if (tabIrisType[i] == irisType)
+                    nbIrisType++;
+            }
+            double accuracy = (double)(nbIrisType / (double)(tabIrisType.Length-1))*100;
+            return (accuracy >= minAccuracy && accuracy <= maxAccuracy);
         }
     }
 }
