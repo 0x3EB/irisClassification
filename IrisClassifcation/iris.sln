@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iris", "iris\iris.csproj", "{EB9E7D05-5C35-4C15-86BC-C0D6FF8455D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IrisTests", "iris\IrisTests\IrisTests.csproj", "{E93F8548-3A46-49D6-AC6D-B138ACD600E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EB9E7D05-5C35-4C15-86BC-C0D6FF8455D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB9E7D05-5C35-4C15-86BC-C0D6FF8455D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB9E7D05-5C35-4C15-86BC-C0D6FF8455D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E93F8548-3A46-49D6-AC6D-B138ACD600E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E93F8548-3A46-49D6-AC6D-B138ACD600E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E93F8548-3A46-49D6-AC6D-B138ACD600E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E93F8548-3A46-49D6-AC6D-B138ACD600E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

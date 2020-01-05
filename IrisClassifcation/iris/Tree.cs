@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace iris
 {
-    class Tree<T>
+    public class Tree<T>
     {
         private Node<T> root;
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace iris
 {
-    class Node<T>
+    public class Node<T>
     {
         private T value;
         private Node<T> RChild;

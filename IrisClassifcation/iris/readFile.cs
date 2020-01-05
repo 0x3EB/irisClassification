@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace iris
 {
-    class readFile
+    public class readFile
     {
         private string fileName;
         public readFile(string filename) {
