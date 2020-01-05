@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace iris
 {
     public class Model
     {
-        private readFile _file;
-        private Tree<double[]> _tree;
+        private Tree<double[,]> _tree;
         // Default values
         private static int _irisType = 2;
         private static int _minAccuracy = 10;
@@ -13,11 +14,15 @@ namespace iris
         private static int _minIndividuals = 65;
         private static int _maxTreeSize = 300;
         private const double Tolerance = 0.001;
+        private int Individuals { get; }
+        private int Feature { get; }
         
-        public Model(string file)
+        public Model(string fileName)
         {
-            _file = new readFile(file);
-            _tree = new Tree<double[]>();
+            var file = new readFile(fileName);
+            Individuals = file.getNbLine();
+            Feature = file.getNbCol();
+            _tree = new Tree<double[,]>(new Node<double[,]>(file.GetFile(), null, null));
         }
 
         public void AskParameters()
@@ -42,6 +47,70 @@ namespace iris
             }
             return iris;
         }
+
+        public void Prepare()
+        {
+            if (IsSampleDiv(_tree.Root, _tree.Root.Value.Length))
+            {
+                Console.WriteLine(median(GetColumn(_tree.Root.Value, 1)));
+            }
+        }
+
+        // private int BestDivision()
+        // {
+        //     // Get all columns
+        //     for (var i = 0; i < _tree.Root.Value.GetLength(1); ++i)
+        //     {
+        //         List<double> left, right;
+        //         var column = GetColumn(_tree.Root.Value, i);
+        //         var median = this.median(column);
+        //         foreach (var val in column)
+        //         {
+        //             if (val <= median)
+        //             {
+        //                 left.Add(val);
+        //             }
+        //             right.Add(val);
+        //         }
+        //     }
+        // }
+
+        private double[] GetColumn(double[,] matrix, int columnNumber)
+        {
+            return Enumerable.Range(0, matrix.GetLength(0))
+                .Select(x => matrix[x, columnNumber])
+                .ToArray();
+        }
+        public double median(double[] tabVal)
+        {
+            Array.Sort(tabVal);
+            if (tabVal.Length < 2 || TabSameValue(tabVal))
+            {
+                return 0;
+            }
+            else if (tabVal.Length % 2 != 0)
+            {
+                int index = (tabVal.Length + 1) / 2;
+                if (tabVal.Max() != tabVal[index])
+                    return tabVal[index];
+                return tabVal[index - 1];
+            }
+            else
+            {
+                int index1 = tabVal.Length / 2;
+                int index2 = (tabVal.Length / 2) + 1;
+                return (tabVal[index1] + tabVal[index2]) / 2;
+            }
+        }
+        
+        private Boolean TabSameValue(double[] tab)
+        {
+            for (int i = 0; i < tab.Length - 1; i++)
+            {
+                return tab[i] == tab[i + 1];
+            }
+            return false;
+        }
         
         private static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, string message=null)
         {
@@ -61,9 +130,8 @@ namespace iris
                 return res;
             } while (true);
         }
-
         
-        public bool IsSampleDiv(Node<double[]> node, int nbIndividuals)
+        private bool IsSampleDiv(Node<double[,]> node, int nbIndividuals)
         {
             if (!IsMaxHeightReached(_tree, _maxTreeSize, node))
                 return false;
@@ -73,8 +141,8 @@ namespace iris
                 return false;
             return true;
         }
-
-        private bool IsMaxHeightReached(Tree<double[]> tree, int maxTreeSize, Node<double[]> node)
+        
+        private bool IsMaxHeightReached(Tree<double[,]> tree, int maxTreeSize, Node<double[,]> node)
         {
             return tree.Height(node) < maxTreeSize;
         }
@@ -86,9 +154,14 @@ namespace iris
 
         private bool SampleAccuracy()
         {
-            double[] tabIrisType = _file.getDoubleCol(0);
+            var tabIrisType = new double[_tree.Root.Value.GetLength(0) - 1];
+            for (var i = 0; i < tabIrisType.Length; ++i)
+            {
+                tabIrisType[i] = _tree.Root.Value[i, 0];
+            }
+            
             int nbIrisType = 0;
-            for (int i=0;i<tabIrisType.Length-1;i++)
+            for (int i=0; i<tabIrisType.Length; i++)
             {
                 if (tabIrisType[i] == _irisType)
                     nbIrisType++;
