@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -75,6 +76,50 @@ namespace iris
         //     }
         // }
 
+        public double[,] ResizedTree(int indexCol)
+        {
+            double[,] new2DArray = null;
+            for (var i = 0; i < _tree.Root.Value.GetLength(0); ++i)
+            {
+                double[] tab = null;
+                double[] tabWithRemovedValue = null;
+                for (var j = 0; j < _tree.Root.Value.GetLength(1); ++j)
+                {
+                    tab = new double[_tree.Root.Value.GetLength(1)];
+                    tab[j] = _tree.Root.Value[i,j];
+                    tabWithRemovedValue = RemoveDoubleArrayItem(tab, 2);
+                }
+                new2DArray = ResizeArray<double>(_tree.Root.Value, 120, tabWithRemovedValue.Length, indexCol);
+            }
+            return new2DArray;
+        }
+
+        // supprime la colone du tab avec indexCol et retourne un nouveau tableau
+        T[,] ResizeArray<T>(T[,] original, int rows, int cols, int indexCol)
+        {
+            var newArray = new T[rows, cols];
+            int minRows = Math.Min(rows, original.GetLength(0));
+            int minCols = Math.Min(cols, original.GetLength(1));
+            for (int i = 0; i < minRows; i++)
+                for (int j = 0; j < minCols; j++)
+                {
+                    if (j >= indexCol)
+                        newArray[i, j] = original[i, j+1];
+                    else
+                        newArray[i, j] = original[i, j];
+                }
+                    
+            return newArray;
+        }
+
+        private double[] RemoveDoubleArrayItem(double[] tab, int indexCol)
+        {
+            ArrayList doubleArrayList = new ArrayList(tab);
+            doubleArrayList.RemoveAt(indexCol);
+            double[] returnDoubleArray = (double[])doubleArrayList.ToArray(typeof(double));
+            return returnDoubleArray;
+        }
+ 
         private double[] GetColumn(double[,] matrix, int columnNumber)
         {
             return Enumerable.Range(0, matrix.GetLength(0))
