@@ -53,15 +53,18 @@ namespace iris
             // Remove the first line, as it's not part of the sample
             input = input.Substring(input.IndexOf('\n') + 1);;
             int i = 0, j = 0;
-            double[,] result = new double[getNbLine() - 1, getNbCol()];
+            double[,] result = new double[getNbLine()-1, getNbCol()];
             foreach (var row in input.Split('\n'))
             {
                 j = 0;
                 foreach (var col in row.Trim().Split(' '))
                 {
-                    double numb = 0.0;
+                    double numb = 0;
                     if (col.Trim().Contains(".") || col.Trim().Contains(","))
-                        numb = double.Parse(col.Trim());
+                    {
+                        numb = double.Parse(col.Trim().Replace('.',','));
+                    }
+                        
                     else
                     {
                         try
