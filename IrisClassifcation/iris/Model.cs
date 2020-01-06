@@ -89,7 +89,7 @@ namespace iris
                     tab[j] = _tree.Root.Value[i,j];
                     tabWithRemovedValue = RemoveDoubleArrayItem(tab, 2);
                 }
-                new2DArray = ResizeArray<double>(_tree.Root.Value, 120, tabWithRemovedValue.Length, indexCol);
+                new2DArray = ResizeArray<double>(_tree.Root.Value, _tree.Root.Value.GetLength(0), tabWithRemovedValue.Length, indexCol);
             }
             return new2DArray;
         }
