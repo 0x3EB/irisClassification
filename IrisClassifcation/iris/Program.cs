@@ -28,7 +28,7 @@ namespace iris
             // Node<double> n1 = new Node<double>(1, null, null);
             // Console.WriteLine(ab.Height(n1));
             // Console.WriteLine(IsSampleDiv(ab, _maxTreeSize, n1, _minIndividuals, r.getNbLine(), _maxAccuracy, _minAccuracy, _irisType, r));
-             Console.ReadLine();
+             // Console.ReadLine();
         }
     }
 }

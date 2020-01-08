@@ -60,20 +60,13 @@ namespace iris
                 foreach (var col in row.Trim().Split(' '))
                 {
                     double numb = 0;
-                    if (col.Trim().Contains(".") || col.Trim().Contains(","))
-                    {
-                        numb = double.Parse(col.Trim().Replace('.',','));
-                    }
-                        
-                    else
-                    {
-                        try
+                    try
                         {
                             numb = double.Parse(col.Trim());
                         }catch (Exception ex)
                         {
                         }
-                    }
+                    // }
                     if (col.Trim() != "" && col.Trim() != " " && col.Trim()!=null)
                     {
                         result[i, j] = numb;
