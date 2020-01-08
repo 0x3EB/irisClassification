@@ -26,6 +26,11 @@ namespace iris
             _tree = new Tree<double[,]>(new Node<double[,]>(file.GetFile(), null, null));
         }
 
+        public Tree<double[,]> GetTree()
+        {
+            return this._tree;
+        }
+
         public void AskParameters()
         {
             _irisType = CheckInt(positive:true, err:"Enter positive number", message:"Y value to predict?");
@@ -157,7 +162,7 @@ namespace iris
             return false;
         }
         
-        private static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, string message=null)
+        public static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, string message=null)
         {
             do
             {
