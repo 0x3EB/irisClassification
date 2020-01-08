@@ -101,7 +101,15 @@ namespace iris
             {
                 if (gap != 0)
                 {
-                    Console.WriteLine("|-" + node.Value);
+                    if (node.Value is double[,])
+                    {
+                        Console.WriteLine("Node type =" + node.GetType());
+                        Console.Write("Value type =" + node.Value.GetType());
+
+                        //Print2DArrays((T)node.Value);
+                    }
+                    else
+                        Console.WriteLine("|-" + node.Value);
                 }
                 else
                 {
@@ -119,6 +127,20 @@ namespace iris
                 Console.WriteLine("|-X");
             }
         }
+
+
+        public static void Print2DArrays(T[,] tab) 
+        {
+            for (int i = 0; i < tab.GetLength(0); i++)
+            {
+                for (int j = 0; j < tab.GetLength(1); j++)
+                {
+                    Console.Write(tab[i, j]);
+                }
+                Console.Write(Environment.NewLine + Environment.NewLine);
+            }
+        }
+
         public int NbChildren(Node<T> parent)
         {
             int nb = 0;
