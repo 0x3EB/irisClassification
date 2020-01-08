@@ -1,32 +1,37 @@
-﻿namespace iris
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace iris
 {
     public class Node<T>
     {
-        public Node(T[,] array, Node<T> lChild, Node<T> rChild)
+        private T[,] value;
+        private Node<T> RChild;
+        private Node<T> LChild;
+
+        public Node(T[,] value, Node<T> Lchild, Node<T> Rchild)
         {
-            Array = array;
-            LChild = lChild;
-            RChild = rChild;
+            this.value = value;
+            this.LChild = Lchild;
+            this.RChild = Rchild;
+        }
+        public T[,] Value
+        {
+            get { return value; }
         }
 
-        /// <summary>
-        ///     Getter for the value of the node
-        /// </summary>
-        public T[,] Array { get; }
-
-        /// <summary>
-        ///     Number of the column used for the best division
-        /// </summary>
-        public int DivisionVar { get; set; }
-
-        /// <summary>
-        ///     Getter and Setter for the Left Child of the Node
-        /// </summary>
-        public Node<T> LChild { get; set; }
-
-        /// <summary>
-        ///     Getter and Setter for the Right Child of the Node
-        /// </summary>
-        public Node<T> RChild { get; set; }
+        public Node<T> Lchild
+        {
+            get { return LChild; }
+            set { LChild = value; }
+        }
+        public Node<T> Rchild
+        {
+            get { return RChild; }
+            set { RChild = value; }
+        }
     }
 }
