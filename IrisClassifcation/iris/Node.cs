@@ -8,17 +8,17 @@ namespace iris
 {
     public class Node<T>
     {
-        private T value;
+        private T[,] value;
         private Node<T> RChild;
         private Node<T> LChild;
 
-        public Node(T value, Node<T> Lchild, Node<T> Rchild)
+        public Node(T[,] value, Node<T> Lchild, Node<T> Rchild)
         {
             this.value = value;
             this.LChild = Lchild;
             this.RChild = Rchild;
         }
-        public T Value
+        public T[,] Value
         {
             get { return value; }
         }

@@ -23,7 +23,7 @@ namespace iris
             get { return root; }
             set { root = value; }
         }
-        public Node<T> CreateNode(T val) => new Node<T>(val, null, null);
+        public Node<T> CreateNode(T[,] val) => new Node<T>(val, null, null);
 
         public bool AddLChild(Node<T> parent, Node<T> child)
         {
@@ -105,8 +105,7 @@ namespace iris
                     {
                         Console.WriteLine("Node type =" + node.GetType());
                         Console.Write("Value type =" + node.Value.GetType());
-
-                        //Print2DArrays((T)node.Value);
+                        Print2DArrays(node.Value);
                     }
                     else
                         Console.WriteLine("|-" + node.Value);
@@ -138,7 +137,7 @@ namespace iris
                     Console.Write(tab[i, j]);
                 }
                 Console.Write(Environment.NewLine + Environment.NewLine);
-            }
+            }   
         }
 
         public int NbChildren(Node<T> parent)
