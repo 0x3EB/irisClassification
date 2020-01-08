@@ -49,14 +49,36 @@ namespace iris
             return iris;
         }
 
-        public void Prepare()
+        public void Build()
         {
+            Console.WriteLine(_tree.Root.Value[1,1]);
             if (IsSampleDiv(_tree.Root, _tree.Root.Value.Length))
             {
-                Console.WriteLine(median(GetColumn(_tree.Root.Value, 1)));
+                var lists = Split();
+                foreach (var var in lists[0])
+                {
+                    Console.WriteLine(var);
+                }
             }
         }
 
+        private List<double>[] Split()
+        {
+            var lists = new List<double>[2];
+            
+            for (var i = 0; i < _tree.Root.Value.GetLength(1); ++i)
+            {
+                var col = GetColumn(_tree.Root.Value, i);
+                var median = Median(col);
+                var currentLeft = col.Where(value => value <= median).ToList();
+                if (lists[0] == null || currentLeft.Count > lists[0].Count)
+                {
+                    lists[0] = currentLeft;
+                    lists[1] = col.Where(value => value >= median).ToList();
+                }
+            }
+            return lists;
+        }
         // private int BestDivision()
         // {
         //     // Get all columns
@@ -126,7 +148,7 @@ namespace iris
                 .Select(x => matrix[x, columnNumber])
                 .ToArray();
         }
-        public double median(double[] tabVal)
+        public double Median(double[] tabVal)
         {
             Array.Sort(tabVal);
             if (tabVal.Length < 2 || TabSameValue(tabVal))
