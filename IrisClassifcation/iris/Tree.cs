@@ -30,9 +30,9 @@ namespace iris
             bool association = false;
             if (parent != null && child != null)
             {
-                if (parent.Lchild == null)
+                if (parent.LChild == null)
                 {
-                    parent.Lchild = child;
+                    parent.LChild = child;
                     association = true;
                 }
             }
@@ -43,9 +43,9 @@ namespace iris
             bool association = false;
             if (parent != null && child != null)
             {
-                if (parent.Rchild == null)
+                if (parent.RChild == null)
                 {
-                    parent.Rchild = child;
+                    parent.RChild = child;
                     association = true;
                 }
             }
@@ -56,7 +56,7 @@ namespace iris
             bool leaf = false;
             if (node != null)
             {
-                if (node.Rchild == null && node.Lchild == null)
+                if (node.RChild == null && node.LChild == null)
                 {
                     leaf = true;
                 }
@@ -67,27 +67,27 @@ namespace iris
         {
             if (node != null)
             {
-                Console.Write(node.Value + " ");
-                PrefixPrint(node.Lchild);
-                PrefixPrint(node.Rchild);
+                Console.Write(node.Array + " ");
+                PrefixPrint(node.LChild);
+                PrefixPrint(node.RChild);
             }
         }
         public void InfixPrint(Node<T> node)
         {
             if (node != null)
             {
-                InfixPrint(node.Lchild);
-                Console.Write(node.Value + " ");
-                InfixPrint(node.Rchild);
+                InfixPrint(node.LChild);
+                Console.Write(node.Array + " ");
+                InfixPrint(node.RChild);
             }
         }
         public void PostfixPrint(Node<T> node)
         {
             if (node != null)
             {
-                PostfixPrint(node.Lchild);
-                PostfixPrint(node.Rchild);
-                Console.Write(node.Value + " ");
+                PostfixPrint(node.LChild);
+                PostfixPrint(node.RChild);
+                Console.Write(node.Array + " ");
             }
         }
         public void HierarchyPrint(Node<T> node, int gap)
@@ -101,22 +101,22 @@ namespace iris
             {
                 if (gap != 0)
                 {
-                    if (node.Value is double[,])
+                    if (node.Array is double[,])
                     {
-                        Print2DArrays(node.Value);
+                        Print2DArrays(node.Array);
                     }
                     else
-                        Console.WriteLine("|-" + node.Value);
+                        Console.WriteLine("|-" + node.Array);
                 }
                 else
                 {
-                    Console.WriteLine(node.Value);
+                    Console.WriteLine(node.Array);
                 }
                 if (!isLeafNode(node))
                 {
                     gap++;
-                    HierarchyPrint(node.Lchild, gap);
-                    HierarchyPrint(node.Rchild, gap);
+                    HierarchyPrint(node.LChild, gap);
+                    HierarchyPrint(node.RChild, gap);
                 }
             }
             else
@@ -143,11 +143,11 @@ namespace iris
             int nb = 0;
             if (parent != null)
             {
-                if (parent.Lchild != null)
+                if (parent.LChild != null)
                 {
                     nb++;
                 }
-                if (parent.Rchild != null)
+                if (parent.RChild != null)
                 {
                     nb++;
                 }
@@ -158,7 +158,7 @@ namespace iris
         {
             if (parent != null)
             {
-                return NbChildren(parent) + NbDescendant(parent.Rchild) + NbDescendant(parent.Lchild);
+                return NbChildren(parent) + NbDescendant(parent.RChild) + NbDescendant(parent.LChild);
             }
             else
             {
@@ -173,7 +173,7 @@ namespace iris
             }
             if (parent != null)
             {
-                return NbLeaf(parent.Rchild) + NbLeaf(parent.Lchild);
+                return NbLeaf(parent.RChild) + NbLeaf(parent.LChild);
             }
             else
             {
@@ -197,7 +197,7 @@ namespace iris
             }
             if (node != null)
             {
-                return 1 + Max(Height(node.Lchild), Height(node.Rchild));
+                return 1 + Max(Height(node.LChild), Height(node.RChild));
             }
             else
             {
