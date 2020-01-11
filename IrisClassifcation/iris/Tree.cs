@@ -103,8 +103,6 @@ namespace iris
                 {
                     if (node.Value is double[,])
                     {
-                        Console.WriteLine("Node type =" + node.GetType());
-                        Console.Write("Value type =" + node.Value.GetType());
                         Print2DArrays(node.Value);
                     }
                     else
