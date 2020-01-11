@@ -7,14 +7,15 @@ namespace iris
 {
     public class Model
     {
-        private Tree<double[,]> _tree;
+        private Tree<double> _tree;
         // Default values
-        private static int _irisType = 2;
+        private static int _irisType = 3;
         private static int _minAccuracy = 10;
         private static int _maxAccuracy = 95;
         private static int _minIndividuals = 65;
         private static int _maxTreeSize = 300;
-        private const double Tolerance = 0.001;
+        private const double Tolerance = 0.00000000000001;
+        private const int NoColumn = -1;
         private int Individuals { get; }
         private int Feature { get; }
         
@@ -23,14 +24,16 @@ namespace iris
             var file = new readFile(fileName);
             Individuals = file.getNbLine();
             Feature = file.getNbCol();
-            _tree = new Tree<double[,]>(new Node<double[,]>(file.GetFile(), null, null));
+            _tree = new Tree<double>(new Node<double>(file.GetFile(), null, null));
         }
 
-        public Tree<double[,]> GetTree()
+        // Return the model tree
+        public Tree<double> GetTree()
         {
             return this._tree;
         }
 
+        // Prompt the user to enter parameters in order to build the tree
         public void AskParameters()
         {
             _irisType = CheckInt(positive:true, err:"Enter positive number", message:"Y value to predict?");
@@ -40,6 +43,7 @@ namespace iris
             _maxTreeSize = CheckInt(positive:true, err:"Enter positive number", message:"Maximum tree size?");
         }
 
+        // Prompt the user to enter test iris data
         public double[] AskTestIris()
         {
             var features = Enum.GetNames(typeof(IrisFeatures));
@@ -54,134 +58,109 @@ namespace iris
             return iris;
         }
 
+        // Build the tree according to the class properties
         public void Build()
         {
-            Console.WriteLine(_tree.Root.Value[1,1]);
-            if (IsSampleDiv(_tree.Root, _tree.Root.Value.Length))
-            {
-                var lists = Split();
-                foreach (var var in lists[0])
-                {
-                    Console.WriteLine(var);
-                }
-            }
+            Split(_tree.Root);
         }
-
-        private List<double>[] Split()
+        
+        // Split a node in two children
+        private void Split(Node<double> node)
         {
-            var lists = new List<double>[2];
+            if (!IsSampleDiv(node, node.Value.Length)) return;
             
-            for (var i = 0; i < _tree.Root.Value.GetLength(1); ++i)
+            var subSamples = BestSubSamples(node);
+            node.Lchild = new Node<double>(subSamples.Item2, null, null);
+            node.Rchild = new Node<double>(subSamples.Item3, null, null);
+        }
+
+        // Split 'node.Value' using the observing variable offering the best division
+        // Return a Tuple containing :
+        // - column number used to split the node,
+        // - left sub-sample
+        // - right sub-sample
+        private static Tuple<int, double[,], double[,]> BestSubSamples(Node<double> node)
+        {
+            var colNumber = NoColumn;
+            double accuracy = 0;
+            double[,] left = null;
+            double[,] right = null;
+
+            for (var i = 0; i < node.Value.GetLength(1); ++i)
             {
-                var col = GetColumn(_tree.Root.Value, i);
-                var median = Median(col);
-                var currentLeft = col.Where(value => value <= median).ToList();
-                if (lists[0] == null || currentLeft.Count > lists[0].Count)
+                var subSamples = Split2DArray(i, node);
+                // Update best sub-samples given their accuracy
+                var currentAccuracy = SampleAccuracy(subSamples.Item1); 
+                if (currentAccuracy > accuracy)
                 {
-                    lists[0] = currentLeft;
-                    lists[1] = col.Where(value => value >= median).ToList();
+                    accuracy = currentAccuracy;
+                    left = subSamples.Item1;
+                    right = subSamples.Item2;
+                    colNumber = i;
                 }
             }
-            return lists;
+            
+            return new Tuple<int, double[,], double[,]>(colNumber, left, right);
         }
-        // private int BestDivision()
-        // {
-        //     // Get all columns
-        //     for (var i = 0; i < _tree.Root.Value.GetLength(1); ++i)
-        //     {
-        //         List<double> left, right;
-        //         var column = GetColumn(_tree.Root.Value, i);
-        //         var median = this.median(column);
-        //         foreach (var val in column)
-        //         {
-        //             if (val <= median)
-        //             {
-        //                 left.Add(val);
-        //             }
-        //             right.Add(val);
-        //         }
-        //     }
-        // }
-
-        public double[,] ResizedTree(int indexCol)
+        
+        // Split 2D array of node.Value in two subsets :
+        // Item1 : 2D array with all the values of 'nbCol' <= to the corrected median of this column
+        // Item2 : The remaining 2D array with all the values of 'nbCol' >= to the corrected median of this column
+        private static Tuple<double[,], double[,]> Split2DArray(int nbCol, Node<double> node)
         {
-            double[,] new2DArray = null;
-            for (var i = 0; i < _tree.Root.Value.GetLength(0); ++i)
+            var column = GetColumn(node.Value, nbCol);
+            var median = CorrectedMedian(column);
+            var countLeft = column.Count(d => d <= median);
+            var left = new double[countLeft, node.Value.GetLength(1)];
+            var right = new double[node.Value.GetLength(0) - countLeft, node.Value.GetLength(1)];
+
+            for (int i = 0, iLeft = 0, iRight = 0; i < node.Value.GetLength(0); ++i)
             {
-                double[] tab = null;
-                double[] tabWithRemovedValue = null;
-                for (var j = 0; j < _tree.Root.Value.GetLength(1); ++j)
+                if (node.Value[i, nbCol] <= median)
                 {
-                    tab = new double[_tree.Root.Value.GetLength(1)];
-                    tab[j] = _tree.Root.Value[i,j];
-                    tabWithRemovedValue = RemoveDoubleArrayItem(tab, 2);
+                    for (var j = 0; j < node.Value.GetLength(1); ++j)
+                    {
+                        left[iLeft, j] = node.Value[i, j];
+                    }
+                    ++iLeft;
                 }
-                new2DArray = ResizeArray<double>(_tree.Root.Value, _tree.Root.Value.GetLength(0), tabWithRemovedValue.Length, indexCol);
+                else
+                {
+                    for (var j = 0; j < node.Value.GetLength(1); ++j)
+                    {
+                        right[iRight, j] = node.Value[i, j];
+                    }
+                    ++iRight;
+                }
             }
-            return new2DArray;
+            return new Tuple<double[,], double[,]>(left, right);
         }
 
-        // supprime la colone du tab avec indexCol et retourne un nouveau tableau
-        T[,] ResizeArray<T>(T[,] original, int rows, int cols, int indexCol)
-        {
-            var newArray = new T[rows, cols];
-            int minRows = Math.Min(rows, original.GetLength(0));
-            int minCols = Math.Min(cols, original.GetLength(1));
-            for (int i = 0; i < minRows; i++)
-                for (int j = 0; j < minCols; j++)
-                {
-                    if (j >= indexCol)
-                        newArray[i, j] = original[i, j+1];
-                    else
-                        newArray[i, j] = original[i, j];
-                }
-                    
-            return newArray;
-        }
-
-        private double[] RemoveDoubleArrayItem(double[] tab, int indexCol)
-        {
-            ArrayList doubleArrayList = new ArrayList(tab);
-            doubleArrayList.RemoveAt(indexCol);
-            double[] returnDoubleArray = (double[])doubleArrayList.ToArray(typeof(double));
-            return returnDoubleArray;
-        }
- 
-        private double[] GetColumn(double[,] matrix, int columnNumber)
+        // Return the columnNumber column of matrix
+        private static double[] GetColumn(double[,] matrix, int columnNumber)
         {
             return Enumerable.Range(0, matrix.GetLength(0))
                 .Select(x => matrix[x, columnNumber])
                 .ToArray();
         }
-        public double Median(double[] tabVal)
+
+        // Return the corrected median of tab sample
+        private static double CorrectedMedian(double[] tab)
         {
-            Array.Sort(tabVal);
-            if (tabVal.Length < 2 || TabSameValue(tabVal))
-            {
-                return 0;
-            }
-            else if (tabVal.Length % 2 != 0)
-            {
-                int index = (tabVal.Length + 1) / 2;
-                if (tabVal.Max() != tabVal[index])
-                    return tabVal[index];
-                return tabVal[index - 1];
-            }
-            else
-            {
-                int index1 = tabVal.Length / 2;
-                int index2 = (tabVal.Length / 2) + 1;
-                return (tabVal[index1] + tabVal[index2]) / 2;
-            }
+            var median = Median(tab);
+            return 
+                (Math.Abs(median - tab.Last()) < Tolerance) 
+                ? median 
+                : tab[tab.Length - 2];
         }
-        
-        private Boolean TabSameValue(double[] tab)
-        {
-            for (int i = 0; i < tab.Length - 1; i++)
-            {
-                return tab[i] == tab[i + 1];
-            }
-            return false;
+
+        // Return the statistic median of tab sample
+        private static double Median(double[] tab) {
+            var copyTab = new double[tab.Length];
+            Array.Copy(tab, copyTab, tab.Length);
+            Array.Sort(copyTab);
+            var mid = copyTab.Length / 2;
+            return (copyTab.Length % 2 != 0) ? copyTab[mid] : copyTab[mid] + copyTab[mid + 1] / 2;
         }
         
         public static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, string message=null)
@@ -203,43 +182,41 @@ namespace iris
             } while (true);
         }
         
-        private bool IsSampleDiv(Node<double[,]> node, int nbIndividuals)
+        // Return true if node.Value can divided, false otherwise
+        private bool IsSampleDiv(Node<double> node, int nbIndividuals)
         {
+            var sampleAccuracy = SampleAccuracy(node.Value);
             if (!IsMaxHeightReached(_tree, _maxTreeSize, node))
                 return false;
             if (!MoreIndividuals(nbIndividuals))
                 return false;
-            if (!SampleAccuracy())
+            if (!(sampleAccuracy >= _minAccuracy && sampleAccuracy <= _maxAccuracy))
                 return false;
             return true;
         }
         
-        private bool IsMaxHeightReached(Tree<double[,]> tree, int maxTreeSize, Node<double[,]> node)
+        // Return true if the max tree size has been reached
+        private static bool IsMaxHeightReached(Tree<double> tree, int maxTreeSize, Node<double> node)
         {
             return tree.Height(node) < maxTreeSize;
         }
 
-        private bool MoreIndividuals(int nbIndivuals)
+        // Return true if nbIndividuals > _minIndividuals
+        private static bool MoreIndividuals(int nbIndividuals)
         {
-            return nbIndivuals > _minIndividuals;
+            return nbIndividuals > _minIndividuals;
         }
 
-        private bool SampleAccuracy()
+        // Return accuracy of tab sample
+        private static double SampleAccuracy(double[,] tab)
         {
-            var tabIrisType = new double[_tree.Root.Value.GetLength(0) - 1];
-            for (var i = 0; i < tabIrisType.Length; ++i)
+            var nbIrisType = 0;
+            for (var i=0; i < tab.GetLength(0); i++)
             {
-                tabIrisType[i] = _tree.Root.Value[i, 0];
-            }
-            
-            int nbIrisType = 0;
-            for (int i=0; i<tabIrisType.Length; i++)
-            {
-                if (tabIrisType[i] == _irisType)
+                if (Math.Abs(tab[i, 0] - _irisType) < Tolerance)
                     nbIrisType++;
             }
-            double accuracy = (double)(nbIrisType / (double)(tabIrisType.Length-1))*100;
-            return (accuracy >= _minAccuracy && accuracy <= _maxAccuracy);
+            return nbIrisType / (double)(tab.GetLength(0) - 1) * 100;
         }
     }
 }
