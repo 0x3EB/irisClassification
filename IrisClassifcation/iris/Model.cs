@@ -10,9 +10,9 @@ namespace iris
         private Tree<double> _tree;
         // Default values
         private int _irisType = NoIrisType;
-        private double _minAccuracy = 0.6;
+        private double _minAccuracy = 0.1;
         private double _maxAccuracy = 0.7;
-        private int _minIndividuals = 15;
+        private int _minIndividuals = 10;
         private int _maxTreeSize = 50;
         private const double Tolerance = 0.000001;
         private const int NoColumn = -1;
@@ -249,7 +249,7 @@ namespace iris
                 return false;
             if (node.Array.GetLength(0) < _minIndividuals)
                 return false;
-            if (sampleAccuracy >= _minAccuracy || sampleAccuracy >= _maxAccuracy)
+            if (sampleAccuracy < _minAccuracy || sampleAccuracy > _maxAccuracy)
                 return false;
             return true;
         }
