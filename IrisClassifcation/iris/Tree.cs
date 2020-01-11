@@ -14,15 +14,18 @@ namespace iris
         {
             this.root = aa;
         }
+
         public Tree()
         {
             this.root = null;
         }
+
         public Node<T> Root
         {
             get { return root; }
             set { root = value; }
         }
+
         public Node<T> CreateNode(T[,] val) => new Node<T>(val, null, null);
 
         public bool AddLChild(Node<T> parent, Node<T> child)
@@ -36,8 +39,10 @@ namespace iris
                     association = true;
                 }
             }
+
             return association;
         }
+
         public bool AddRChild(Node<T> parent, Node<T> child)
         {
             bool association = false;
@@ -49,8 +54,10 @@ namespace iris
                     association = true;
                 }
             }
+
             return association;
         }
+
         public bool isLeafNode(Node<T> node)
         {
             bool leaf = false;
@@ -61,8 +68,10 @@ namespace iris
                     leaf = true;
                 }
             }
+
             return leaf;
         }
+
         public void PrefixPrint(Node<T> node)
         {
             if (node != null)
@@ -72,6 +81,7 @@ namespace iris
                 PrefixPrint(node.RChild);
             }
         }
+
         public void InfixPrint(Node<T> node)
         {
             if (node != null)
@@ -81,6 +91,7 @@ namespace iris
                 InfixPrint(node.RChild);
             }
         }
+
         public void PostfixPrint(Node<T> node)
         {
             if (node != null)
@@ -90,33 +101,33 @@ namespace iris
                 Console.Write(node.Array + " ");
             }
         }
-        public void HierarchyPrint(Node<T> node, int gap)
-        {
 
+        public void HierarchyPrint(Node<T> node, int gap, Func<Node<T>, double> fnAccuracy)
+        {
             for (int i = 0; i < gap; i++)
             {
                 Console.Write(" ");
             }
+
             if (node != null)
             {
                 if (gap != 0)
                 {
                     if (node.Array is double[,])
                     {
-                        Print2DArrays(node.Array);
+                        Console.WriteLine("|-" + fnAccuracy(node));
                     }
-                    else
-                        Console.WriteLine("|-" + node.Array);
                 }
                 else
                 {
-                    Console.WriteLine(node.Array);
+                    Console.WriteLine(fnAccuracy(node));
                 }
+
                 if (!isLeafNode(node))
                 {
                     gap++;
-                    HierarchyPrint(node.LChild, gap);
-                    HierarchyPrint(node.RChild, gap);
+                    HierarchyPrint(node.LChild, gap,fnAccuracy);
+                    HierarchyPrint(node.RChild, gap,fnAccuracy);
                 }
             }
             else
@@ -126,7 +137,7 @@ namespace iris
         }
 
 
-        public static void Print2DArrays(T[,] tab) 
+        public static void Print2DArrays(T[,] tab)
         {
             for (int i = 0; i < tab.GetLength(0); i++)
             {
@@ -134,8 +145,9 @@ namespace iris
                 {
                     Console.Write(tab[i, j]);
                 }
+
                 Console.Write(Environment.NewLine + Environment.NewLine);
-            }   
+            }
         }
 
         public int NbChildren(Node<T> parent)
@@ -147,13 +159,16 @@ namespace iris
                 {
                     nb++;
                 }
+
                 if (parent.RChild != null)
                 {
                     nb++;
                 }
             }
+
             return nb;
         }
+
         public int NbDescendant(Node<T> parent)
         {
             if (parent != null)
@@ -165,12 +180,14 @@ namespace iris
                 return 0;
             }
         }
+
         public int NbLeaf(Node<T> parent)
         {
             if (isLeafNode(parent))
             {
                 return 1;
             }
+
             if (parent != null)
             {
                 return NbLeaf(parent.RChild) + NbLeaf(parent.LChild);
@@ -180,6 +197,7 @@ namespace iris
                 return 0;
             }
         }
+
         public int Max(int a, int b)
         {
             int max = a;
@@ -187,14 +205,17 @@ namespace iris
             {
                 max = b;
             }
+
             return max;
         }
+
         public int Height(Node<T> node)
         {
             if (isLeafNode(node))
             {
                 return 1;
             }
+
             if (node != null)
             {
                 return 1 + Max(Height(node.LChild), Height(node.RChild));
