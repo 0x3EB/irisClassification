@@ -7,18 +7,18 @@ namespace iris
 {
     public class Model
     {
-        private static Tree<double> _tree;
+        private Tree<double> _tree;
         // Default values
-        private static int _irisType = 1;
-        private static int _minAccuracy = 60;
-        private static int _maxAccuracy = 95;
-        private static int _minIndividuals = 10;
-        private static int _maxTreeSize = 50;
+        private int _irisType = 1;
+        private int _minAccuracy = 60;
+        private int _maxAccuracy = 95;
+        private int _minIndividuals = 10;
+        private int _maxTreeSize = 50;
         private const double Tolerance = 0.000001;
         private const int NoColumn = -1;
         private int Individuals { get; }
         private int Feature { get; }
-        
+
         public Model(string fileName)
         {
             var file = new readFile(fileName);
@@ -92,7 +92,7 @@ namespace iris
             Split(node.RChild);
         }
 
-        private static double Predict(IReadOnlyList<double> newIris, Node<double> node)
+        private double Predict(IReadOnlyList<double> newIris, Node<double> node)
         {
             var median = CorrectedMedian(GetColumn(node.Array, node.DivisionVar));
             
@@ -106,7 +106,7 @@ namespace iris
         // - column number used to split the node,
         // - left sub-sample
         // - right sub-sample
-        private static Tuple<int, double[,], double[,]> BestSubSamples(Node<double> node)
+        private Tuple<int, double[,], double[,]> BestSubSamples(Node<double> node)
         {
             var column = NoColumn;
             double accuracy = 0;
@@ -248,13 +248,13 @@ namespace iris
         }
         
         // Return true if the max tree size has been reached
-        private static bool IsMaxHeightReached()
+        private bool IsMaxHeightReached()
         {
             return _tree.Height(_tree.Root) >= _maxTreeSize;
         }
 
         // Return accuracy of tab sample
-        private static double SampleAccuracy(double[,] tab)
+        private double SampleAccuracy(double[,] tab)
         {
             var nbIrisType = 0;
             for (var i=0; i < tab.GetLength(0); i++)
