@@ -9,12 +9,12 @@ namespace iris
     {
         private static Tree<double> _tree;
         // Default values
-        private static int _irisType = 3;
+        private static int _irisType = 1;
         private static int _minAccuracy = 60;
         private static int _maxAccuracy = 95;
         private static int _minIndividuals = 10;
         private static int _maxTreeSize = 50;
-        private const double Tolerance = 0.00000000000001;
+        private const double Tolerance = 0.000001;
         private const int NoColumn = -1;
         private int Individuals { get; }
         private int Feature { get; }
@@ -62,7 +62,7 @@ namespace iris
         public void Build()
         {
             Split(_tree.Root);
-            Console.WriteLine(_tree.NbDescendant(_tree.Root));
+            Console.WriteLine("tree height " + _tree.Height(_tree.Root));
         }
         
         // Split a node in two children
@@ -71,10 +71,13 @@ namespace iris
             if (!IsSampleDiv(node, node.Value.Length)) return;
             
             var subSamples = BestSubSamples(node);
+            if (subSamples == null) return;
             node.Lchild = new Node<double>(subSamples.Item2, null, null);
             node.Rchild = new Node<double>(subSamples.Item3, null, null);
-            Console.WriteLine(SampleAccuracy(node.Value));
+            Console.WriteLine("acc " + SampleAccuracy(node.Value) +
+                              ", individuals " + node.Value.GetLength(0));
             Split(node.Lchild);
+            Split(node.Rchild);
         }
 
         // Split 'node.Value' using the observing variable offering the best division
@@ -89,21 +92,22 @@ namespace iris
             double[,] left = null;
             double[,] right = null;
 
-            for (var i = 0; i < node.Value.GetLength(1); ++i)
+            for (var i = 1; i < node.Value.GetLength(1); ++i)
             {
                 var subSamples = Split2DArray(i, node);
                 // Update best sub-samples given their accuracy
-                var currentAccuracy = SampleAccuracy(subSamples.Item1); 
-                if (currentAccuracy > accuracy)
+                var accuracyLeft = SampleAccuracy(subSamples.Item1);
+                var accuracyRight = SampleAccuracy(subSamples.Item2);
+                if (Math.Max(accuracyLeft, accuracyRight) > accuracy)
                 {
-                    accuracy = currentAccuracy;
+                    accuracy = Math.Max(accuracyLeft, accuracyRight);
                     left = subSamples.Item1;
                     right = subSamples.Item2;
                     colNumber = i;
                 }
             }
-            
-            return new Tuple<int, double[,], double[,]>(colNumber, left, right);
+
+            return Math.Abs(accuracy) < Tolerance ? null : new Tuple<int, double[,], double[,]>(colNumber, left, right);
         }
         
         // Split 2D array of node.Value in two subsets :
@@ -150,20 +154,22 @@ namespace iris
         // Return the corrected median of tab sample
         private static double CorrectedMedian(double[] tab)
         {
-            var median = Median(tab);
-            return 
-                (Math.Abs(median - tab.Last()) < Tolerance) 
-                ? median 
-                : tab[tab.Length - 2];
-        }
-
-        // Return the statistic median of tab sample
-        private static double Median(double[] tab) {
             var copyTab = new double[tab.Length];
             Array.Copy(tab, copyTab, tab.Length);
             Array.Sort(copyTab);
-            var mid = copyTab.Length / 2;
-            return (copyTab.Length % 2 != 0) ? copyTab[mid] : copyTab[mid] + copyTab[mid + 1] / 2;
+            
+            var midIndex = (copyTab.Length % 2 == 0) 
+                ? (copyTab.Length / 2) - 1 
+                : ((copyTab.Length + 1) / 2) - 1;
+            
+            var median = (copyTab.Length % 2 == 0)
+                ? copyTab[midIndex] + copyTab[midIndex + 1] / 2 
+                : copyTab[midIndex] ;
+            
+            return 
+                (Math.Abs(median - copyTab.Last()) > Tolerance) 
+                ? median 
+                : tab[copyTab.Length - 2];
         }
         
         public static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, string message=null)
@@ -213,7 +219,7 @@ namespace iris
                 if (Math.Abs(tab[i, 0] - _irisType) < Tolerance)
                     nbIrisType++;
             }
-            return nbIrisType / (double)(tab.GetLength(0) - 1) * 100;
+            return nbIrisType / (double)(tab.GetLength(0));
         }
     }
 }
