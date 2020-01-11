@@ -64,6 +64,11 @@ namespace iris
             Split(_tree.Root);
             Console.WriteLine("tree height " + _tree.Height(_tree.Root));
         }
+
+        public double Predict(double[] newIris)
+        {
+            return Predict(newIris, _tree.Root);
+        }
         
         // Split a node in two children
         private void Split(Node<double> node)
@@ -81,10 +86,15 @@ namespace iris
             Split(node.RChild);
         }
 
-        // private double Predict(double[] newIris)
-        // {
-        //         
-        // }
+        private static double Predict(IReadOnlyList<double> newIris, Node<double> node)
+        {
+            var median = CorrectedMedian(GetColumn(node.Array, node.DivisionVar));
+            if (!_tree.isLeafNode(node))
+            {
+                Predict(newIris, newIris[node.DivisionVar - 1] <= median ? node.LChild : node.RChild);
+            }
+            return SampleAccuracy(node.Array);
+        }
 
         // Split 'node.Value' using the observing variable offering the best division
         // Return a Tuple containing :
