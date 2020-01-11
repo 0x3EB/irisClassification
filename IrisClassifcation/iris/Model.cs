@@ -72,8 +72,8 @@ namespace iris
             
             var subSamples = BestSubSamples(node);
             if (subSamples == null) return;
-            node.Lchild = new Node<double>(subSamples.Item1, null, null);
-            node.Rchild = new Node<double>(subSamples.Item2, null, null);
+            node.Lchild = new Node<double>(subSamples[0], null, null);
+            node.Rchild = new Node<double>(subSamples[1], null, null);
             Console.WriteLine("acc " + SampleAccuracy(node.Value) +
                               ", individuals " + node.Value.GetLength(0));
             Split(node.Lchild);
@@ -85,39 +85,41 @@ namespace iris
         // - column number used to split the node,
         // - left sub-sample
         // - right sub-sample
-        private static Tuple<double[,], double[,]> BestSubSamples(Node<double> node)
+        private static double[][,] BestSubSamples(Node<double> node)
         {
             double accuracy = 0;
-            double[,] left = null;
-            double[,] right = null;
+            var subSamples = new double[2][,];
+            subSamples[0] = null;
+            subSamples[1] = null;
 
             for (var i = 1; i < node.Value.GetLength(1); ++i)
             {
-                var subSamples = Split2DArray(i, node);
+                var currentSubSamples = Split2DArray(i, node);
                 // Update best sub-samples given their accuracy
-                var accuracyLeft = SampleAccuracy(subSamples.Item1);
-                var accuracyRight = SampleAccuracy(subSamples.Item2);
+                var accuracyLeft = SampleAccuracy(currentSubSamples[0]);
+                var accuracyRight = SampleAccuracy(currentSubSamples[1]);
                 if (Math.Max(accuracyLeft, accuracyRight) > accuracy)
                 {
                     accuracy = Math.Max(accuracyLeft, accuracyRight);
-                    left = subSamples.Item1;
-                    right = subSamples.Item2;
+                    subSamples[0] = currentSubSamples[0];
+                    subSamples[1] = currentSubSamples[1];
                 }
             }
 
-            return Math.Abs(accuracy) < Tolerance ? null : new Tuple<double[,], double[,]>(left, right);
+            return Math.Abs(accuracy) < Tolerance ? null : subSamples;
         }
         
         // Split 2D array of node.Value in two subsets :
         // Item1 : 2D array with all the values of 'nbCol' <= to the corrected median of this column
         // Item2 : The remaining 2D array with all the values of 'nbCol' >= to the corrected median of this column
-        private static Tuple<double[,], double[,]> Split2DArray(int nbCol, Node<double> node)
+        private static double[][,] Split2DArray(int nbCol, Node<double> node)
         {
             var column = GetColumn(node.Value, nbCol);
             var median = CorrectedMedian(column);
             var countLeft = column.Count(d => d <= median);
-            var left = new double[countLeft, node.Value.GetLength(1)];
-            var right = new double[node.Value.GetLength(0) - countLeft, node.Value.GetLength(1)];
+            var subSamples = new double[2][,];
+            subSamples[0] = new double[countLeft, node.Value.GetLength(1)];
+            subSamples[1] = new double[node.Value.GetLength(0) - countLeft, node.Value.GetLength(1)];
 
             for (int i = 0, iLeft = 0, iRight = 0; i < node.Value.GetLength(0); ++i)
             {
@@ -125,7 +127,7 @@ namespace iris
                 {
                     for (var j = 0; j < node.Value.GetLength(1); ++j)
                     {
-                        left[iLeft, j] = node.Value[i, j];
+                        subSamples[0][iLeft, j] = node.Value[i, j];
                     }
                     ++iLeft;
                 }
@@ -133,12 +135,12 @@ namespace iris
                 {
                     for (var j = 0; j < node.Value.GetLength(1); ++j)
                     {
-                        right[iRight, j] = node.Value[i, j];
+                        subSamples[1][iRight, j] = node.Value[i, j];
                     }
                     ++iRight;
                 }
             }
-            return new Tuple<double[,], double[,]>(left, right);
+            return subSamples;
         }
 
         // Return the columnNumber column of matrix
