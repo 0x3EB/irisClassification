@@ -8,30 +8,18 @@ namespace iris
 {
     public class Node<T>
     {
-        private T[,] value;
-        private Node<T> RChild;
-        private Node<T> LChild;
+        public Node(T[,] array, Node<T> lChild, Node<T> rChild)
+        {
+            Array = array;
+            LChild = lChild;
+            RChild = rChild;
+        }
+        public T[,] Array { get; }
 
-        public Node(T[,] value, Node<T> Lchild, Node<T> Rchild)
-        {
-            this.value = value;
-            this.LChild = Lchild;
-            this.RChild = Rchild;
-        }
-        public T[,] Value
-        {
-            get { return value; }
-        }
+        public int DivisionVar { get; set; }
 
-        public Node<T> Lchild
-        {
-            get { return LChild; }
-            set { LChild = value; }
-        }
-        public Node<T> Rchild
-        {
-            get { return RChild; }
-            set { RChild = value; }
-        }
+        public Node<T> LChild { get; set; }
+
+        public Node<T> RChild { get; set; }
     }
 }
