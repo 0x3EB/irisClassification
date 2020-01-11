@@ -10,14 +10,14 @@ namespace IrisTests
         [Test]
         public void Test1()
         {
-            Node<int> racine = new Node<int>(12,null,null);
+            Node<int> racine = new Node<int>(new int [1,1],null,null);
             Tree<int> ab = new Tree<int>(racine);
-            Node<int> n1 = ab.CreateNode(1);
-            Node<int> n7 = ab.CreateNode(7);
-            Node<int> n91 = ab.CreateNode(91);
-            Node<int> n67 = ab.CreateNode(67);
-            Node<int> n82 = ab.CreateNode(82);
-            Node<int> n61 = ab.CreateNode(61);
+            Node<int> n1 = ab.CreateNode(new int [1,1]);
+            Node<int> n7 = ab.CreateNode(new int [1,1]);
+            Node<int> n91 = ab.CreateNode(new int [1,1]);
+            Node<int> n67 = ab.CreateNode(new int [1,1]);
+            Node<int> n82 = ab.CreateNode(new int [1,1]);
+            Node<int> n61 = ab.CreateNode(new int [1,1]);
             ab.AddLChild(ab.Root, n1);
             ab.AddRChild(ab.Root, n7);
             ab.AddLChild(ab.Root.Lchild, n91);
