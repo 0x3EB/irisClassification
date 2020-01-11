@@ -68,7 +68,7 @@ namespace iris
         // Split a node in two children
         private void Split(Node<double> node)
         {
-            if (!IsSampleDiv(node, node.Value.Length)) return;
+            if (!IsSampleDiv(node)) return;
             
             var subSamples = BestSubSamples(node);
             if (subSamples == null) return;
@@ -192,12 +192,12 @@ namespace iris
         }
         
         // Return true if node.Value can divided, false otherwise
-        private bool IsSampleDiv(Node<double> node, int nbIndividuals)
+        private bool IsSampleDiv(Node<double> node)
         {
             var sampleAccuracy = SampleAccuracy(node.Value);
             if (IsMaxHeightReached())
                 return false;
-            if (nbIndividuals < _minIndividuals)
+            if (node.Value.GetLength(0) < _minIndividuals)
                 return false;
             if (sampleAccuracy >= _minAccuracy && sampleAccuracy <= _maxAccuracy)
                 return false;
