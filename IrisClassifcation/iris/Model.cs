@@ -27,6 +27,11 @@ namespace iris
             Feature = file.getNbCol();
             _tree = new Tree<double>(new Node<double>(file.GetFile(), null, null));
         }
+        
+        public Model(string fileName, int irisType) : this(fileName)
+        {
+            _irisType = irisType;
+        }
 
         // Return the model tree
         public Tree<double> GetTree()
@@ -81,6 +86,8 @@ namespace iris
         private void Build(Node<double> node)
         {
             if (_irisType == NoIrisType) throw new IrisTypeNotSetException();
+            Console.WriteLine("acc " + SampleAccuracy(node.Array) +
+                              ", individuals " + node.Array.GetLength(0));
             if (!IsSampleDiv(node)) return;
             
             var subSamples = BestSubSamples(node);
@@ -88,8 +95,6 @@ namespace iris
             node.DivisionVar = subSamples.Item1;
             node.LChild = new Node<double>(subSamples.Item2, null, null);
             node.RChild = new Node<double>(subSamples.Item3, null, null);
-            Console.WriteLine("acc " + SampleAccuracy(node.Array) +
-                              ", individuals " + node.Array.GetLength(0));
             Build(node.LChild);
             Build(node.RChild);
         }
