@@ -15,7 +15,6 @@ namespace iris
         private static int _minIndividuals = 10;
         private static int _maxTreeSize = 50;
         private const double Tolerance = 0.000001;
-        private const int NoColumn = -1;
         private int Individuals { get; }
         private int Feature { get; }
         
