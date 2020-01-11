@@ -68,7 +68,7 @@ namespace iris
         // Build the tree according to the class properties
         public void Build()
         {
-            Split(_tree.Root);
+            Build(_tree.Root);
             Console.WriteLine("tree height " + _tree.Height(_tree.Root));
         }
 
@@ -78,7 +78,7 @@ namespace iris
         }
         
         // Split a node in two children
-        private void Split(Node<double> node)
+        private void Build(Node<double> node)
         {
             if (_irisType == NoIrisType) throw new IrisTypeNotSetException();
             if (!IsSampleDiv(node)) return;
@@ -90,8 +90,8 @@ namespace iris
             node.RChild = new Node<double>(subSamples.Item3, null, null);
             Console.WriteLine("acc " + SampleAccuracy(node.Array) +
                               ", individuals " + node.Array.GetLength(0));
-            Split(node.LChild);
-            Split(node.RChild);
+            Build(node.LChild);
+            Build(node.RChild);
         }
 
         private double Predict(IReadOnlyList<double> newIris, Node<double> node)
