@@ -35,7 +35,7 @@ namespace iris
         }
 
         // Prompt the user to enter parameters in order to build the tree
-        public void AskParameters(bool defaults=true)
+        public void AskParameters(bool defaults=false)
         {
             if (defaults)
             {
