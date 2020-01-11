@@ -7,13 +7,13 @@ namespace iris
 {
     public class Model
     {
-        private Tree<double> _tree;
+        private static Tree<double> _tree;
         // Default values
         private static int _irisType = 3;
-        private static int _minAccuracy = 10;
+        private static int _minAccuracy = 60;
         private static int _maxAccuracy = 95;
-        private static int _minIndividuals = 65;
-        private static int _maxTreeSize = 300;
+        private static int _minIndividuals = 10;
+        private static int _maxTreeSize = 50;
         private const double Tolerance = 0.00000000000001;
         private const int NoColumn = -1;
         private int Individuals { get; }
@@ -30,7 +30,7 @@ namespace iris
         // Return the model tree
         public Tree<double> GetTree()
         {
-            return this._tree;
+            return _tree;
         }
 
         // Prompt the user to enter parameters in order to build the tree
@@ -62,6 +62,7 @@ namespace iris
         public void Build()
         {
             Split(_tree.Root);
+            Console.WriteLine(_tree.NbDescendant(_tree.Root));
         }
         
         // Split a node in two children
@@ -72,6 +73,8 @@ namespace iris
             var subSamples = BestSubSamples(node);
             node.Lchild = new Node<double>(subSamples.Item2, null, null);
             node.Rchild = new Node<double>(subSamples.Item3, null, null);
+            Console.WriteLine(SampleAccuracy(node.Value));
+            Split(node.Lchild);
         }
 
         // Split 'node.Value' using the observing variable offering the best division
@@ -186,25 +189,19 @@ namespace iris
         private bool IsSampleDiv(Node<double> node, int nbIndividuals)
         {
             var sampleAccuracy = SampleAccuracy(node.Value);
-            if (!IsMaxHeightReached(_tree, _maxTreeSize, node))
+            if (IsMaxHeightReached())
                 return false;
-            if (!MoreIndividuals(nbIndividuals))
+            if (nbIndividuals < _minIndividuals)
                 return false;
-            if (!(sampleAccuracy >= _minAccuracy && sampleAccuracy <= _maxAccuracy))
+            if (sampleAccuracy >= _minAccuracy && sampleAccuracy <= _maxAccuracy)
                 return false;
             return true;
         }
         
         // Return true if the max tree size has been reached
-        private static bool IsMaxHeightReached(Tree<double> tree, int maxTreeSize, Node<double> node)
+        private static bool IsMaxHeightReached()
         {
-            return tree.Height(node) < maxTreeSize;
-        }
-
-        // Return true if nbIndividuals > _minIndividuals
-        private static bool MoreIndividuals(int nbIndividuals)
-        {
-            return nbIndividuals > _minIndividuals;
+            return _tree.Height(_tree.Root) >= _maxTreeSize;
         }
 
         // Return accuracy of tab sample
