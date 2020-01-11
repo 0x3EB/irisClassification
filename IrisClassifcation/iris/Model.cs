@@ -34,13 +34,19 @@ namespace iris
         }
 
         // Prompt the user to enter parameters in order to build the tree
-        public void AskParameters()
+        public void AskParameters(bool defaults=true)
         {
-            _irisType = CheckInt(positive:true, err:"Enter positive number", message:"Y value to predict?");
-            _minAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage", message:"Minimum accuracy?");
-            _maxAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage", message:"Maximum accuracy?");
-            _minIndividuals = CheckInt(positive:true, err:"Enter positive number", message:"Minimum number of individuals?");
-            _maxTreeSize = CheckInt(positive:true, err:"Enter positive number", message:"Maximum tree size?");
+            if (defaults)
+            {
+                _irisType = CheckInt(positive:true, err:"Enter positive number", message:"Y value to predict?");
+            }
+            else
+            {
+                _minAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage", message:"Minimum accuracy?");
+                _maxAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage", message:"Maximum accuracy?");
+                _minIndividuals = CheckInt(positive:true, err:"Enter positive number", message:"Minimum number of individuals?");
+                _maxTreeSize = CheckInt(positive:true, err:"Enter positive number", message:"Maximum tree size?");   
+            }
         }
 
         // Prompt the user to enter test iris data
