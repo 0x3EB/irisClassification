@@ -20,7 +20,8 @@ namespace iris
             // AskTestIris();
             var file = Path.Combine(Directory.GetCurrentDirectory(), "iris.txt");
             var model = new Model(file);
-            model.GetTree().HierarchyPrint(model.GetTree().Root, 2);
+            model.Build();
+            // model.GetTree().HierarchyPrint(model.GetTree().Root, 2);
             // var r = new readFile(file);
             // Console.WriteLine("test "+r.GetFile(121,5)[2,0]);
             // Tree<double> ab = new Tree<double>();
