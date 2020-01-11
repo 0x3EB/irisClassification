@@ -72,8 +72,8 @@ namespace iris
             
             var subSamples = BestSubSamples(node);
             if (subSamples == null) return;
-            node.Lchild = new Node<double>(subSamples.Item2, null, null);
-            node.Rchild = new Node<double>(subSamples.Item3, null, null);
+            node.Lchild = new Node<double>(subSamples.Item1, null, null);
+            node.Rchild = new Node<double>(subSamples.Item2, null, null);
             Console.WriteLine("acc " + SampleAccuracy(node.Value) +
                               ", individuals " + node.Value.GetLength(0));
             Split(node.Lchild);
@@ -85,9 +85,8 @@ namespace iris
         // - column number used to split the node,
         // - left sub-sample
         // - right sub-sample
-        private static Tuple<int, double[,], double[,]> BestSubSamples(Node<double> node)
+        private static Tuple<double[,], double[,]> BestSubSamples(Node<double> node)
         {
-            var colNumber = NoColumn;
             double accuracy = 0;
             double[,] left = null;
             double[,] right = null;
@@ -103,11 +102,10 @@ namespace iris
                     accuracy = Math.Max(accuracyLeft, accuracyRight);
                     left = subSamples.Item1;
                     right = subSamples.Item2;
-                    colNumber = i;
                 }
             }
 
-            return Math.Abs(accuracy) < Tolerance ? null : new Tuple<int, double[,], double[,]>(colNumber, left, right);
+            return Math.Abs(accuracy) < Tolerance ? null : new Tuple<double[,], double[,]>(left, right);
         }
         
         // Split 2D array of node.Value in two subsets :
