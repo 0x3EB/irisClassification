@@ -20,10 +20,10 @@ namespace IrisTests
             Node<int> n61 = ab.CreateNode(new int [1,1]);
             ab.AddLChild(ab.Root, n1);
             ab.AddRChild(ab.Root, n7);
-            ab.AddLChild(ab.Root.Lchild, n91);
-            ab.AddRChild(ab.Root.Lchild, n67);
-            ab.AddRChild(ab.Root.Rchild, n82);
-            ab.AddLChild(ab.Root.Rchild.Rchild, n61);
+            ab.AddLChild(ab.Root.LChild, n91);
+            ab.AddRChild(ab.Root.LChild, n67);
+            ab.AddRChild(ab.Root.RChild, n82);
+            ab.AddLChild(ab.Root.RChild.RChild, n61);
             Console.Write("\nAffichage préfixe : ");
             ab.PrefixPrint(racine);
             Console.Write("\nAffichage infixe : ");
