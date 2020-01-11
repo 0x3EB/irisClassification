@@ -44,14 +44,14 @@ namespace iris
         }
 
         // Prompt the user to enter test iris data
-        public double[] AskTestIris()
+        public static double[] AskTestIris()
         {
             var features = Enum.GetNames(typeof(IrisFeatures));
             var iris = new double[features.Length];
             for (var i = 0; i<features.Length; ++i)
             {
                 var name = features[i];
-                iris[i] = CheckInt(positive: true,
+                iris[i] = CheckDouble(positive: true,
                     err: "Enter a positive number",
                     message: "Enter iris " + name);
             }
@@ -200,6 +200,25 @@ namespace iris
                     Console.WriteLine(message);
                 }
                 var res = Convert.ToInt32(Console.ReadLine());
+                if ((positive && res < 0) || (negative && res > 0) ||
+                    ((!positive && !negative) && (res < min || res > max)))
+                {
+                    Console.WriteLine(err);
+                    continue;
+                }
+                return res;
+            } while (true);
+        }
+        
+        public static double CheckDouble(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, string message=null)
+        {
+            do
+            {
+                if (message != null)
+                {
+                    Console.WriteLine(message);
+                }
+                var res = Convert.ToDouble(Console.ReadLine());
                 if ((positive && res < 0) || (negative && res > 0) ||
                     ((!positive && !negative) && (res < min || res > max)))
                 {
