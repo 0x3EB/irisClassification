@@ -89,11 +89,10 @@ namespace iris
         private static double Predict(IReadOnlyList<double> newIris, Node<double> node)
         {
             var median = CorrectedMedian(GetColumn(node.Array, node.DivisionVar));
-            if (!_tree.isLeafNode(node))
-            {
-                Predict(newIris, newIris[node.DivisionVar - 1] <= median ? node.LChild : node.RChild);
-            }
-            return SampleAccuracy(node.Array);
+            
+            return !_tree.isLeafNode(node)
+                ? Predict(newIris, newIris[node.DivisionVar - 1] <= median ? node.LChild : node.RChild) 
+                : SampleAccuracy(node.Array);
         }
 
         // Split 'node.Value' using the observing variable offering the best division
