@@ -11,7 +11,7 @@ namespace iris
         // Default values
         private int _irisType = NoIrisType;
         private double _minAccuracy = 0.1;
-        private double _maxAccuracy = 0.7;
+        private double _maxAccuracy = 0.9;
         private int _minIndividuals = 10;
         private int _maxTreeSize = 50;
         private const double Tolerance = 0.000001;
@@ -31,6 +31,11 @@ namespace iris
         public Model(string fileName, int irisType) : this(fileName)
         {
             _irisType = irisType;
+        }
+
+        public double getIrisType()
+        {
+            return this._irisType;
         }
 
         // Return the model tree
@@ -151,7 +156,6 @@ namespace iris
             var subSamples = new double[2][,];
             subSamples[0] = new double[countLeft, node.Array.GetLength(1)];
             subSamples[1] = new double[node.Array.GetLength(0) - countLeft, node.Array.GetLength(1)];
-
             for (int i = 0, iLeft = 0, iRight = 0; i < node.Array.GetLength(0); ++i)
             {
                 if (node.Array[i, nbCol] <= median)
@@ -270,6 +274,11 @@ namespace iris
                     nbIrisType++;
             }
             return nbIrisType / (double)(tab.GetLength(0));
+        }
+
+        public void DisplayTree(int gap)
+        {
+            _tree.HierarchyPrint(_tree.Root, gap, x=>SampleAccuracy(x.Array));
         }
     }
 }
