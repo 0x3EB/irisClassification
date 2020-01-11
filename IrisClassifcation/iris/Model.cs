@@ -9,13 +9,14 @@ namespace iris
     {
         private Tree<double> _tree;
         // Default values
-        private int _irisType = 1;
+        private int _irisType = NoIrisType;
         private int _minAccuracy = 60;
         private int _maxAccuracy = 95;
         private int _minIndividuals = 10;
         private int _maxTreeSize = 50;
         private const double Tolerance = 0.000001;
         private const int NoColumn = -1;
+        private const int NoIrisType = -1;
         private int Individuals { get; }
         private int Feature { get; }
 
@@ -79,6 +80,7 @@ namespace iris
         // Split a node in two children
         private void Split(Node<double> node)
         {
+            if (_irisType == NoIrisType) throw new IrisTypeNotSetException();
             if (!IsSampleDiv(node)) return;
             
             var subSamples = BestSubSamples(node);
