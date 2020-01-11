@@ -18,13 +18,13 @@ namespace iris
         private const int NoColumn = -1;
         private const int NoIrisType = -1;
         private int Individuals { get; }
-        private int Feature { get; }
+        private int Features { get; }
 
         public Model(string fileName)
         {
             var file = new readFile(fileName);
             Individuals = file.getNbLine();
-            Feature = file.getNbCol();
+            Features = file.getNbCol();
             _tree = new Tree<double>(new Node<double>(file.GetFile(), null, null));
         }
         
@@ -120,7 +120,7 @@ namespace iris
             double[,] left = null;
             double[,] right = null;
 
-            for (var i = 1; i < node.Array.GetLength(1); ++i)
+            for (var i = 1; i < Features; ++i)
             {
                 var currentSubSamples = Split2DArray(i, node);
                 // Update best sub-samples given their accuracy
