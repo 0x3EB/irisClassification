@@ -65,7 +65,7 @@ namespace iris
                     {
                         numb = double.Parse(col.Trim());
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         if (containDotOrComma)
                         {
