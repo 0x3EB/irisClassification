@@ -1,27 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace iris
 {
     public class File
     {
-        private string _fileName;
+        private readonly string _fileName;
 
         public File(string filename)
         {
-            this._fileName = filename;
+            _fileName = filename;
         }
+
+        private static bool IsWindows => YourPlatform == PlatformID.Win32NT ||
+                                         YourPlatform == PlatformID.Win32Windows || YourPlatform == PlatformID.Win32S ||
+                                         YourPlatform == PlatformID.WinCE;
+
+        private static PlatformID YourPlatform => Environment.OSVersion.Platform;
 
         private string GetFirstLine()
         {
-            return System.IO.File.ReadLines(this._fileName).First();
+            return System.IO.File.ReadLines(_fileName).First();
         }
 
         public int GetNbLine()
@@ -38,18 +37,18 @@ namespace iris
 
         public double[,] GetFile()
         {
-            String input = System.IO.File.ReadAllText(this._fileName);
+            var input = System.IO.File.ReadAllText(_fileName);
             // Remove the first line, as it's not part of the sample
             input = input.Substring(input.IndexOf('\n') + 1);
             int i = 0, j = 0;
-            double[,] result = new double[GetNbLine() - 1, GetNbCol()];
+            var result = new double[GetNbLine() - 1, GetNbCol()];
             foreach (var row in input.Split('\n'))
             {
                 j = 0;
-                double numb = -1.0;
+                var numb = -1.0;
                 foreach (var col in row.Trim().Split(' '))
                 {
-                    bool containDotOrComma = col.Contains(',') || col.Contains('.');
+                    var containDotOrComma = col.Contains(',') || col.Contains('.');
                     try
                     {
                         numb = double.Parse(col.Trim());
@@ -57,11 +56,9 @@ namespace iris
                     catch (Exception)
                     {
                         if (containDotOrComma)
-                        {
-                            numb = (IsWindows)
+                            numb = IsWindows
                                 ? double.Parse(col.Trim().Replace('.', ','))
                                 : double.Parse(col.Trim().Replace(',', '.'));
-                        }
                     }
 
                     if (col.Trim() != "" && col.Trim() != " " && col.Trim() != null)
@@ -76,11 +73,5 @@ namespace iris
 
             return result;
         }
-
-        private static bool IsWindows => YourPlatform == PlatformID.Win32NT ||
-                                         YourPlatform == PlatformID.Win32Windows || YourPlatform == PlatformID.Win32S ||
-                                         YourPlatform == PlatformID.WinCE;
-
-        private static PlatformID YourPlatform => Environment.OSVersion.Platform;
     }
 }
