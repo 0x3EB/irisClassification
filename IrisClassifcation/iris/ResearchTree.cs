@@ -150,7 +150,7 @@ namespace iris
             return 0;
         }
 
-        public void InsertionSommet(Top<int> top, int val)
+        public void InsertionTop(Top<int> top, int val)
         {
             if (top == null)
             {
@@ -158,7 +158,7 @@ namespace iris
             }
             else
             {
-                InsertionSommet(val > top.Value ? top.RChild : top.LChild, val);
+                InsertionTop(val > top.Value ? top.RChild : top.LChild, val);
             }
         }
     }
