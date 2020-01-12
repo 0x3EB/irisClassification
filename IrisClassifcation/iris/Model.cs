@@ -396,11 +396,12 @@ namespace iris
         /// <returns>return the char of math comparison </returns>
         public static string CharOfOperation(double medianParent, Node<double> node)
         {
-            if (medianParent > CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
+            var median = CorrectedMedian(GetColumn(node.Array, node.DivisionVar));
+            if (medianParent > median)
                 return ">";
-            if (medianParent >= CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
+            if (medianParent >= median)
                 return ">=";
-            if (medianParent < CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
+            if (medianParent < median)
                 return "<";
             return "=<";
         }
