@@ -8,21 +8,21 @@ namespace iris
 {
     class ResearchTree<T>
     {
-        private Top<T> root;
-        private Top<T> child;
+        private Top<T> _root;
+        private Top<T> _child;
 
         public ResearchTree(Top<T> root)
         {
-            this.root = root;
+            this._root = root;
         }
         public ResearchTree()
         {
-            this.root = null;
+            this._root = null;
         }
         public Top<T> Root
         {
-            get { return root; }
-            set { root = value; }
+            get { return _root; }
+            set { _root = value; }
         }
         public Top<T> CreationSommet(T val)
         {
@@ -54,7 +54,7 @@ namespace iris
             }
             return association;
         }
-        public bool isLeafTop(Top<T> top)
+        public bool IsLeafTop(Top<T> top)
         {
             bool leaf = false;
             if (top != null)
@@ -110,7 +110,7 @@ namespace iris
                 {
                     Console.WriteLine(top.Value);
                 }
-                if (!isLeafTop(top))
+                if (!IsLeafTop(top))
                 {
                     gap++;
                     HierarchyPrint(top.LChild, gap);
@@ -151,7 +151,7 @@ namespace iris
         }
         public int NbFeuille(Top<T> parent)
         {
-            if (isLeafTop(parent))
+            if (IsLeafTop(parent))
             {
                 return 1;
             }
@@ -175,7 +175,7 @@ namespace iris
         }
         public int Hauteur(Top<T> top)
         {
-            if (isLeafTop(top))
+            if (IsLeafTop(top))
             {
                 return 1;
             }
