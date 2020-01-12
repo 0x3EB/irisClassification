@@ -21,6 +21,10 @@ namespace iris
         private int Individuals { get; }
         private int Features { get; }
 
+        /// <summary>
+        /// Constructor of Model
+        /// </summary>
+        /// <param name="fileName"></param>
         public Model(string fileName)
         {
             var file = new readFile(fileName);
@@ -29,23 +33,38 @@ namespace iris
             _tree = new Tree<double>(new Node<double>(file.GetFile(), null, null));
         }
 
+        /// <summary>
+        /// Constructor of Model
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="irisType"></param>
         public Model(string fileName, int irisType) : this(fileName)
         {
             _irisType = irisType;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>return _irisType</returns>
         public double getIrisType()
         {
             return this._irisType;
         }
 
-        // Return the model tree
+       /// <summary>
+       /// Return the model tree
+       /// </summary>
+       /// <returns></returns>
         public Tree<double> GetTree()
         {
             return _tree;
         }
 
-        // Prompt the user to enter parameters in order to build the tree
+        /// <summary>
+        /// Prompt the user to enter parameters in order to build the tree
+        /// </summary>
+        /// <param name="defaults"></param>
         public void AskParameters(bool defaults = false)
         {
             if (defaults)
@@ -62,7 +81,10 @@ namespace iris
             }
         }
 
-        // Prompt the user to enter test iris data
+        /// <summary>
+        ///  Prompt the user to enter test iris data
+        /// </summary>
+        /// <returns></returns>
         public static double[] AskTestIris()
         {
             var features = Enum.GetNames(typeof(IrisFeatures));
@@ -78,7 +100,9 @@ namespace iris
             return iris;
         }
 
-        // Build the tree according to the class properties
+        /// <summary>
+        /// Build the tree according to the class properties
+        /// </summary>
         public void Build()
         {
             Build(_tree.Root);
@@ -89,7 +113,11 @@ namespace iris
             return Predict(newIris, _tree.Root);
         }
 
-        // Split a node in two children
+        /// <summary>
+        /// Split a node in two children
+        /// </summary>
+        /// <param name="node"></param>
+        /// <exception cref="IrisTypeNotSetException"></exception>
         private void Build(Node<double> node)
         {
             if (_irisType == NoIrisType) throw new IrisTypeNotSetException();
@@ -115,11 +143,15 @@ namespace iris
                 : SampleAccuracy(node.Array);
         }
 
-        // Split 'node.Value' using the observing variable offering the best division
-        // Return a Tuple containing :
-        // - column number used to split the node,
-        // - left sub-sample
-        // - right sub-sample
+        /// <summary>
+        /// Split 'node.Value' using the observing variable offering the best division
+        /// Return a Tuple containing :
+        /// - column number used to split the node,
+        /// - left sub-sample
+        /// - right sub-sample
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         private Tuple<int, double[,], double[,]> BestSubSamples(Node<double> node)
         {
             var column = NoColumn;
@@ -147,9 +179,14 @@ namespace iris
                 : new Tuple<int, double[,], double[,]>(column, left, right);
         }
 
-        // Split 2D array of node.Value in two subsets :
-        // Item1 : 2D array with all the values of 'nbCol' <= to the corrected median of this column
-        // Item2 : The remaining 2D array with all the values of 'nbCol' >= to the corrected median of this column
+        /// <summary>
+        /// Split 2D array of node.Value in two subsets :
+        /// Item1 : 2D array with all the values of 'nbCol' <= to the corrected median of this column
+        /// Item2 : The remaining 2D array with all the values of 'nbCol' >= to the corrected median of this column
+        /// </summary>
+        /// <param name="nbCol"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
         private static double[][,] Split2DArray(int nbCol, Node<double> node)
         {
             var column = GetColumn(node.Array, nbCol);
@@ -183,7 +220,12 @@ namespace iris
             return subSamples;
         }
 
-        // Return the columnNumber column of matrix
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="columnNumber"></param>
+        /// <returns>Return the columnNumber column of matrix</returns>
         public static double[] GetColumn(double[,] matrix, int columnNumber)
         {
             return Enumerable.Range(0, matrix.GetLength(0))
@@ -191,7 +233,11 @@ namespace iris
                 .ToArray();
         }
 
-        // Return the corrected median of tab sample
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tab"></param>
+        /// <returns>Return the corrected median of tab sample</returns>
         public static double CorrectedMedian(double[] tab)
         {
             var copyTab = new double[tab.Length];
@@ -234,7 +280,7 @@ namespace iris
             } while (true);
         }
 
-        public static double CheckDouble(string err = "Wrong value", int min = 0, int max = 0, bool negative = false,
+        private static double CheckDouble(string err = "Wrong value", int min = 0, int max = 0, bool negative = false,
             bool positive = false, string message = null)
         {
             do
@@ -256,7 +302,11 @@ namespace iris
             } while (true);
         }
 
-        // Return true if node.Value can divided, false otherwise
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>Return true if node.Value can divided, false otherwise</returns>
         private bool IsSampleDiv(Node<double> node)
         {
             var sampleAccuracy = SampleAccuracy(node.Array);
@@ -269,13 +319,20 @@ namespace iris
             return true;
         }
 
-        // Return true if the max tree size has been reached
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Return true if the max tree size has been reached</returns>
         private bool IsMaxHeightReached()
         {
             return _tree.Height(_tree.Root) >= _maxTreeSize;
         }
 
-        // Return accuracy of tab sample
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tab"></param>
+        /// <returns>Return accuracy of tab sample</returns>
         private double SampleAccuracy(double[,] tab)
         {
             var nbIrisType = 0;
@@ -288,27 +345,46 @@ namespace iris
             return nbIrisType / (double) (tab.GetLength(0));
         }
 
+        /// <summary>
+        /// Method for displaying the all tree with the accuracy, nb of individuals, 
+        /// </summary>
+        /// <param name="gap"></param>
         public void DisplayTree(int gap)
         {
             _tree.HierarchyPrint(_tree.Root, gap, x => SampleAccuracy(x.Array));
         }
 
+        /// <summary>
+        /// Method for displaying the tree height
+        /// </summary>
         public void DisplayTreeHeight()
         {
             Console.WriteLine("The height of the tree is : " + _tree.Height(_tree.Root));
         }
 
+        /// <summary>
+        /// Method for displaying the tree width
+        /// </summary>
         public void DisplayTreeWidth()
         {
             Console.WriteLine("The width of the tree is : " + _tree.NbLeaf(_tree.Root));
         }
 
+        /// <summary>
+        /// Method for displaying the prediction of the selected type
+        /// </summary>
+        /// <param name="newIris"></param>
         public void DisplayPredict(double[] newIris)
         {
             Console.WriteLine("The prediction for your selected type is : " + Predict(newIris));
         }
 
-
+        /// <summary>
+        /// Can display all the Leafs (with the path,Leaf Accuracy, and individuals count for each leaf)
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="medianOfParent"></param>
+        /// <param name="root"></param>
         private void Leafs(Node<double> node, double medianOfParent = 0, bool root = true)
         {
             if (node != null)
@@ -339,6 +415,12 @@ namespace iris
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="medianParent"></param>
+        /// <param name="node"></param>
+        /// <returns>return the char of math comparison </returns>
         public static string CharOfOperation(double medianParent, Node<double> node)
         {
             if (medianParent > CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
@@ -351,6 +433,9 @@ namespace iris
                 return "=<";
         }
 
+        /// <summary>
+        /// Method for displaying all the leafs 
+        /// </summary>
         public void DisplayLeafs()
         {
             Leafs(_tree.Root);
