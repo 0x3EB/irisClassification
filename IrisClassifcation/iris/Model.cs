@@ -120,8 +120,6 @@ namespace iris
         private void Build(Node<double> node)
         {
             if (_irisType == NoIrisType) throw new IrisTypeNotSetException();
-            // Console.WriteLine("acc " + SampleAccuracy(node.Array) +
-            //                   ", individuals " + node.Array.GetLength(0));
             if (!IsSampleDiv(node)) return;
 
             var subSamples = BestSubSamples(node);
