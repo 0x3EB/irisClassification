@@ -115,7 +115,7 @@ namespace iris
                 {
                     if (node.Array is double[,])
                     {
-                        Console.WriteLine("|-" + fnAccuracy(node));
+                        Console.WriteLine("|- Accuracy : " + fnAccuracy(node)+ " / Individuals count :"+node.Array.GetLength(0));
                     }
                 }
                 else
@@ -126,8 +126,8 @@ namespace iris
                 if (!isLeafNode(node))
                 {
                     gap++;
-                    HierarchyPrint(node.LChild, gap,fnAccuracy);
-                    HierarchyPrint(node.RChild, gap,fnAccuracy);
+                    HierarchyPrint(node.LChild, gap, fnAccuracy);
+                    HierarchyPrint(node.RChild, gap, fnAccuracy);
                 }
             }
             else
@@ -198,7 +198,7 @@ namespace iris
             }
         }
 
-        public int Max(int a, int b)
+        private int Max(int a, int b)
         {
             int max = a;
             if (a < b)
