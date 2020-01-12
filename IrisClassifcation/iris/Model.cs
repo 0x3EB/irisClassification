@@ -8,6 +8,7 @@ namespace iris
     public class Model
     {
         private Tree<double> _tree;
+
         // Default values
         private int _irisType = NoIrisType;
         private double _minAccuracy = 0.1;
@@ -27,7 +28,7 @@ namespace iris
             Features = file.getNbCol();
             _tree = new Tree<double>(new Node<double>(file.GetFile(), null, null));
         }
-        
+
         public Model(string fileName, int irisType) : this(fileName)
         {
             _irisType = irisType;
@@ -45,18 +46,19 @@ namespace iris
         }
 
         // Prompt the user to enter parameters in order to build the tree
-        public void AskParameters(bool defaults=false)
+        public void AskParameters(bool defaults = false)
         {
             if (defaults)
             {
-                _irisType = CheckInt(positive:true, err:"Enter positive number", message:"Y value to predict?");
+                _irisType = CheckInt(positive: true, err: "Enter positive number", message: "Y value to predict?");
             }
             else
             {
-                _minAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage", message:"Minimum accuracy?");
-                _maxAccuracy = CheckInt(min:0, max:100, err:"Wrong percentage", message:"Maximum accuracy?");
-                _minIndividuals = CheckInt(positive:true, err:"Enter positive number", message:"Minimum number of individuals?");
-                _maxTreeSize = CheckInt(positive:true, err:"Enter positive number", message:"Maximum tree size?");   
+                _minAccuracy = CheckInt(min: 0, max: 100, err: "Wrong percentage", message: "Minimum accuracy?");
+                _maxAccuracy = CheckInt(min: 0, max: 100, err: "Wrong percentage", message: "Maximum accuracy?");
+                _minIndividuals = CheckInt(positive: true, err: "Enter positive number",
+                    message: "Minimum number of individuals?");
+                _maxTreeSize = CheckInt(positive: true, err: "Enter positive number", message: "Maximum tree size?");
             }
         }
 
@@ -65,13 +67,14 @@ namespace iris
         {
             var features = Enum.GetNames(typeof(IrisFeatures));
             var iris = new double[features.Length];
-            for (var i = 0; i<features.Length; ++i)
+            for (var i = 0; i < features.Length; ++i)
             {
                 var name = features[i];
                 iris[i] = CheckDouble(positive: true,
                     err: "Enter a positive number",
                     message: "Enter iris " + name);
             }
+
             return iris;
         }
 
@@ -79,22 +82,21 @@ namespace iris
         public void Build()
         {
             Build(_tree.Root);
-            Console.WriteLine("tree height " + _tree.Height(_tree.Root));
         }
 
-        public double Predict(double[] newIris)
+        private double Predict(double[] newIris)
         {
             return Predict(newIris, _tree.Root);
         }
-        
+
         // Split a node in two children
         private void Build(Node<double> node)
         {
             if (_irisType == NoIrisType) throw new IrisTypeNotSetException();
-            Console.WriteLine("acc " + SampleAccuracy(node.Array) +
-                              ", individuals " + node.Array.GetLength(0));
+            // Console.WriteLine("acc " + SampleAccuracy(node.Array) +
+            //                   ", individuals " + node.Array.GetLength(0));
             if (!IsSampleDiv(node)) return;
-            
+
             var subSamples = BestSubSamples(node);
             if (subSamples == null) return;
             node.DivisionVar = subSamples.Item1;
@@ -107,9 +109,9 @@ namespace iris
         private double Predict(IReadOnlyList<double> newIris, Node<double> node)
         {
             var median = CorrectedMedian(GetColumn(node.Array, node.DivisionVar));
-            
+
             return !_tree.isLeafNode(node)
-                ? Predict(newIris, newIris[node.DivisionVar - 1] <= median ? node.LChild : node.RChild) 
+                ? Predict(newIris, newIris[node.DivisionVar - 1] <= median ? node.LChild : node.RChild)
                 : SampleAccuracy(node.Array);
         }
 
@@ -141,10 +143,10 @@ namespace iris
             }
 
             return Math.Abs(accuracy) < Tolerance
-                ? null 
+                ? null
                 : new Tuple<int, double[,], double[,]>(column, left, right);
         }
-        
+
         // Split 2D array of node.Value in two subsets :
         // Item1 : 2D array with all the values of 'nbCol' <= to the corrected median of this column
         // Item2 : The remaining 2D array with all the values of 'nbCol' >= to the corrected median of this column
@@ -164,6 +166,7 @@ namespace iris
                     {
                         subSamples[0][iLeft, j] = node.Array[i, j];
                     }
+
                     ++iLeft;
                 }
                 else
@@ -172,9 +175,11 @@ namespace iris
                     {
                         subSamples[1][iRight, j] = node.Array[i, j];
                     }
+
                     ++iRight;
                 }
             }
+
             return subSamples;
         }
 
@@ -192,22 +197,23 @@ namespace iris
             var copyTab = new double[tab.Length];
             Array.Copy(tab, copyTab, tab.Length);
             Array.Sort(copyTab);
-            
-            var midIndex = (copyTab.Length % 2 == 0) 
-                ? (copyTab.Length / 2) - 1 
+
+            var midIndex = (copyTab.Length % 2 == 0)
+                ? (copyTab.Length / 2) - 1
                 : ((copyTab.Length + 1) / 2) - 1;
-            
+
             var median = (copyTab.Length % 2 == 0)
-                ? copyTab[midIndex] + copyTab[midIndex + 1] / 2 
-                : copyTab[midIndex] ;
-            
-            return 
-                (Math.Abs(median - copyTab.Last()) > Tolerance) 
-                ? median 
-                : tab[copyTab.Length - 2];
+                ? copyTab[midIndex] + copyTab[midIndex + 1] / 2
+                : copyTab[midIndex];
+
+            return
+                (Math.Abs(median - copyTab.Last()) > Tolerance)
+                    ? median
+                    : tab[copyTab.Length - 2];
         }
-        
-        public static int CheckInt(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, string message=null)
+
+        public static int CheckInt(string err = "Wrong value", int min = 0, int max = 0, bool negative = false,
+            bool positive = false, string message = null)
         {
             do
             {
@@ -215,6 +221,7 @@ namespace iris
                 {
                     Console.WriteLine(message);
                 }
+
                 var res = Convert.ToInt32(Console.ReadLine());
                 if ((positive && res < 0) || (negative && res > 0) ||
                     ((!positive && !negative) && (res < min || res > max)))
@@ -222,11 +229,13 @@ namespace iris
                     Console.WriteLine(err);
                     continue;
                 }
+
                 return res;
             } while (true);
         }
-        
-        public static double CheckDouble(string err = "Wrong value",int min = 0, int max = 0, bool negative = false, bool positive = false, string message=null)
+
+        public static double CheckDouble(string err = "Wrong value", int min = 0, int max = 0, bool negative = false,
+            bool positive = false, string message = null)
         {
             do
             {
@@ -234,6 +243,7 @@ namespace iris
                 {
                     Console.WriteLine(message);
                 }
+
                 var res = Convert.ToDouble(Console.ReadLine());
                 if ((positive && res < 0) || (negative && res > 0) ||
                     ((!positive && !negative) && (res < min || res > max)))
@@ -241,10 +251,11 @@ namespace iris
                     Console.WriteLine(err);
                     continue;
                 }
+
                 return res;
             } while (true);
         }
-        
+
         // Return true if node.Value can divided, false otherwise
         private bool IsSampleDiv(Node<double> node)
         {
@@ -257,7 +268,7 @@ namespace iris
                 return false;
             return true;
         }
-        
+
         // Return true if the max tree size has been reached
         private bool IsMaxHeightReached()
         {
@@ -268,17 +279,59 @@ namespace iris
         private double SampleAccuracy(double[,] tab)
         {
             var nbIrisType = 0;
-            for (var i=0; i < tab.GetLength(0); i++)
+            for (var i = 0; i < tab.GetLength(0); i++)
             {
                 if (Math.Abs(tab[i, 0] - _irisType) < Tolerance)
                     nbIrisType++;
             }
-            return nbIrisType / (double)(tab.GetLength(0));
+
+            return nbIrisType / (double) (tab.GetLength(0));
         }
 
         public void DisplayTree(int gap)
         {
-            _tree.HierarchyPrint(_tree.Root, gap, x=>SampleAccuracy(x.Array));
+            _tree.HierarchyPrint(_tree.Root, gap, x => SampleAccuracy(x.Array));
+        }
+
+        public void DisplayTreeHeight()
+        {
+            Console.WriteLine("The height of the tree is : " + _tree.Height(_tree.Root));
+        }
+
+        public void DisplayTreeWidth()
+        {
+            Console.WriteLine("The width of the tree is : " + _tree.NbLeaf(_tree.Root));
+        }
+
+        public void DisplayPredict(double[] newIris)
+        {
+            Console.WriteLine("The prediction for your selected type is : " + Predict(newIris));
+        }
+
+        private void Leafs(Node<double> node, bool root = true)
+        {
+            if (node != null)
+            {
+                var median = CorrectedMedian(GetColumn(node.Array, node.DivisionVar));
+                if (!_tree.isLeafNode(node))
+                {
+                    Console.Write(" X" + (node.DivisionVar + 1) + " puis ");
+                    Leafs(node.LChild);
+                    Leafs(node.RChild);
+                }
+                else
+                {
+                    Console.Write("X" + (node.DivisionVar + 1));
+                    Console.WriteLine(" < ---- CHEMIN | Leaf Accuracy : " + SampleAccuracy(node.Array) +
+                                      ", individuals count :" + node.Array.GetLength(0));
+                    Console.WriteLine("******************************");
+                }
+            }
+        }
+
+        public void DisplayLeafs()
+        {
+            Leafs(_tree.Root);
         }
     }
 }
