@@ -308,25 +308,47 @@ namespace iris
             Console.WriteLine("The prediction for your selected type is : " + Predict(newIris));
         }
 
-        private void Leafs(Node<double> node, bool root = true)
+
+        private void Leafs(Node<double> node, double medianOfParent = 0, bool root = true)
         {
             if (node != null)
             {
-                var median = CorrectedMedian(GetColumn(node.Array, node.DivisionVar));
                 if (!_tree.isLeafNode(node))
                 {
-                    Console.Write(" X" + (node.DivisionVar + 1) + " puis ");
-                    Leafs(node.LChild);
-                    Leafs(node.RChild);
+                    if (!root)
+                    {
+                        Console.Write(" X" + (node.DivisionVar + 1) + CharOfOperation(medianOfParent, node) +
+                                      medianOfParent + " - ");
+                    }
+                    else
+                    {
+                        Console.Write("PATH : ROOT - ");
+                    }
+
+                    Leafs(node.LChild, CorrectedMedian(GetColumn(node.Array, node.DivisionVar)), false);
+                    Leafs(node.RChild, CorrectedMedian(GetColumn(node.Array, node.DivisionVar)), false);
                 }
                 else
                 {
-                    Console.Write("X" + (node.DivisionVar + 1));
-                    Console.WriteLine(" < ---- CHEMIN | Leaf Accuracy : " + SampleAccuracy(node.Array) +
+                    Console.Write("X" + (node.DivisionVar + 1) + CharOfOperation(medianOfParent, node) +
+                                  medianOfParent);
+                    Console.WriteLine(" | Leaf Accuracy : " + SampleAccuracy(node.Array) +
                                       ", individuals count :" + node.Array.GetLength(0));
                     Console.WriteLine("******************************");
                 }
             }
+        }
+
+        private static string CharOfOperation(double medianParent, Node<double> node)
+        {
+            if (medianParent > CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
+                return ">";
+            else if (medianParent >= CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
+                return ">=";
+            else if (medianParent < CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
+                return "<";
+            else
+                return "=<";
         }
 
         public void DisplayLeafs()
