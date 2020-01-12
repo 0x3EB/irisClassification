@@ -10,29 +10,29 @@ using System.Threading.Tasks;
 
 namespace iris
 {
-    public class readFile
+    public class File
     {
-        private string fileName;
+        private string _fileName;
 
-        public readFile(string filename)
+        public File(string filename)
         {
-            this.fileName = filename;
+            this._fileName = filename;
         }
 
-        public readFile()
+        public File()
         {
-            this.fileName = null;
+            this._fileName = null;
         }
 
         public string FileName
         {
-            get { return fileName; }
-            set { fileName = value; }
+            get { return _fileName; }
+            set { _fileName = value; }
         }
 
         private string getFirstLine()
         {
-            return File.ReadLines(this.fileName).First();
+            return System.IO.File.ReadLines(this._fileName).First();
         }
 
         public int getNbLine()
@@ -49,7 +49,7 @@ namespace iris
 
         public double[,] GetFile()
         {
-            String input = File.ReadAllText(this.fileName);
+            String input = System.IO.File.ReadAllText(this._fileName);
             // Remove the first line, as it's not part of the sample
             input = input.Substring(input.IndexOf('\n') + 1);
             int i = 0, j = 0;
