@@ -15,7 +15,7 @@ namespace iris
                                           "(3) : Display tree\n" +
                                           "(4) : Display leafs\n" +
                                           "(5) : Predict\n" +
-                                          "(0) : Exist";
+                                          "(0) : Exit";
 
         private static void Main(string[] args)
         {
