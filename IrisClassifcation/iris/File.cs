@@ -19,17 +19,6 @@ namespace iris
             this._fileName = filename;
         }
 
-        public File()
-        {
-            this._fileName = null;
-        }
-
-        public string FileName
-        {
-            get { return _fileName; }
-            set { _fileName = value; }
-        }
-
         private string getFirstLine()
         {
             return System.IO.File.ReadLines(this._fileName).First();
@@ -88,27 +77,10 @@ namespace iris
             return result;
         }
 
-        public double[] GetDoubleCol(int col)
-        {
-            double[] vals = new double[getNbLine()];
-            for (int i = 0; i < getNbLine() - 1; i++)
-            {
-                vals[i] = GetFile()[i, col];
-            }
-
-            return vals;
-        }
-
-        private static bool IsUnix => YourPlatformId == 4 || YourPlatformId == 6 || YourPlatformId == 128 ||
-                                      YourPlatform == PlatformID.Unix;
-
         private static bool IsWindows => YourPlatform == PlatformID.Win32NT ||
                                          YourPlatform == PlatformID.Win32Windows || YourPlatform == PlatformID.Win32S ||
                                          YourPlatform == PlatformID.WinCE;
 
-        private static OperatingSystem YourOs => Environment.OSVersion;
-        private static int YourPlatformId => (int) YourPlatform;
         private static PlatformID YourPlatform => Environment.OSVersion.Platform;
-        private static Version YourVersion => YourOs.Version;
     }
 }
