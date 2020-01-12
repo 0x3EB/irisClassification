@@ -19,21 +19,21 @@ namespace iris
             this._fileName = filename;
         }
 
-        private string getFirstLine()
+        private string GetFirstLine()
         {
             return System.IO.File.ReadLines(this._fileName).First();
         }
 
-        public int getNbLine()
+        public int GetNbLine()
         {
-            var firstSpaceIndex = getFirstLine().IndexOf(' ');
-            return Convert.ToInt32(getFirstLine().Substring(0, firstSpaceIndex)) + 1;
+            var firstSpaceIndex = GetFirstLine().IndexOf(' ');
+            return Convert.ToInt32(GetFirstLine().Substring(0, firstSpaceIndex)) + 1;
         }
 
-        public int getNbCol()
+        public int GetNbCol()
         {
-            var firstSpaceIndex = getFirstLine().IndexOf(' ');
-            return Convert.ToInt32(getFirstLine().Substring(firstSpaceIndex));
+            var firstSpaceIndex = GetFirstLine().IndexOf(' ');
+            return Convert.ToInt32(GetFirstLine().Substring(firstSpaceIndex));
         }
 
         public double[,] GetFile()
@@ -42,7 +42,7 @@ namespace iris
             // Remove the first line, as it's not part of the sample
             input = input.Substring(input.IndexOf('\n') + 1);
             int i = 0, j = 0;
-            double[,] result = new double[getNbLine() - 1, getNbCol()];
+            double[,] result = new double[GetNbLine() - 1, GetNbCol()];
             foreach (var row in input.Split('\n'))
             {
                 j = 0;
