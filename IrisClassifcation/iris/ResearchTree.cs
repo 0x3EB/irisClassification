@@ -9,7 +9,6 @@ namespace iris
     class ResearchTree<T>
     {
         private Top<T> _root;
-        private Top<T> _child;
 
         public ResearchTree(Top<T> root)
         {
