@@ -58,7 +58,7 @@ namespace iris
             return association;
         }
 
-        public bool isLeafNode(Node<T> node)
+        public bool isLeafNode(Node<double> node)
         {
             bool leaf = false;
             if (node != null)
@@ -102,7 +102,7 @@ namespace iris
             }
         }
 
-        public void HierarchyPrint(Node<T> node, int gap, Func<Node<T>, double> fnAccuracy)
+        public void HierarchyPrint(Node<double> node, int gap, Func<Node<double>, double> fnAccuracy)
         {
             for (int i = 0; i < gap; i++)
             {
@@ -115,8 +115,10 @@ namespace iris
                 {
                     if (node.Array is double[,])
                     {
+                        var median = Model.CorrectedMedian(Model.GetColumn(node.Array, node.DivisionVar));
                         Console.WriteLine("|- Accuracy : " + fnAccuracy(node) + " / Individuals count :" +
-                                          node.Array.GetLength(0) + " / X" + node.DivisionVar + " ");
+                                          node.Array.GetLength(0) + " / X" + node.DivisionVar +
+                                          Model.CharOfOperation(median, node) + median);
                     }
                 }
                 else
@@ -182,7 +184,7 @@ namespace iris
             }
         }
 
-        public int NbLeaf(Node<T> parent)
+        public int NbLeaf(Node<double> parent)
         {
             if (isLeafNode(parent))
             {
@@ -210,7 +212,7 @@ namespace iris
             return max;
         }
 
-        public int Height(Node<T> node)
+        public int Height(Node<double> node)
         {
             if (isLeafNode(node))
             {
