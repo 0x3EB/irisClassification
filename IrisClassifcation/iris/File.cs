@@ -26,13 +26,13 @@ namespace iris
 
         public int getNbLine()
         {
-            var firstSpaceIndex = getFirstLine().IndexOf(" ");
+            var firstSpaceIndex = getFirstLine().IndexOf(' ');
             return Convert.ToInt32(getFirstLine().Substring(0, firstSpaceIndex)) + 1;
         }
 
         public int getNbCol()
         {
-            var firstSpaceIndex = getFirstLine().IndexOf(" ");
+            var firstSpaceIndex = getFirstLine().IndexOf(' ');
             return Convert.ToInt32(getFirstLine().Substring(firstSpaceIndex));
         }
 
