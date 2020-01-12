@@ -9,16 +9,16 @@ namespace iris
     class Top<T>
     {
         private T value;
-        private Top<T> Lchild;
-        private Top<T> Rchild;
-        private Top<T> parent;
+        private Top<T> _lchild;
+        private Top<T> _rchild;
+        private Top<T> _parent;
 
         public Top(Top<T> parent, T value, Top<T> Lchild, Top<T> Rchild)
         {
-            this.parent = parent;
+            this._parent = parent;
             this.value = value;
-            this.Lchild = Lchild;
-            this.Rchild = Rchild;
+            this._lchild = Lchild;
+            this._rchild = Rchild;
         }
         public T Value
         {
@@ -26,7 +26,7 @@ namespace iris
         }
         public Top<T> Parent
         {
-            get { return parent; }
+            get { return _parent; }
         }
         public Top<T> LChild
         {

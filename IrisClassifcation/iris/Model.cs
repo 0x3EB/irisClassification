@@ -27,7 +27,7 @@ namespace iris
         /// <param name="fileName"></param>
         public Model(string fileName)
         {
-            var file = new readFile(fileName);
+            var file = new File(fileName);
             Individuals = file.getNbLine();
             Features = file.getNbCol();
             _tree = new Tree<double>(new Node<double>(file.GetFile(), null, null));
@@ -47,7 +47,7 @@ namespace iris
         /// 
         /// </summary>
         /// <returns>return _irisType</returns>
-        public double getIrisType()
+        public double GetIrisType()
         {
             return this._irisType;
         }
@@ -138,7 +138,7 @@ namespace iris
         {
             var median = CorrectedMedian(GetColumn(node.Array, node.DivisionVar));
 
-            return !_tree.isLeafNode(node)
+            return !_tree.IsLeafNode(node)
                 ? Predict(newIris, newIris[node.DivisionVar - 1] <= median ? node.LChild : node.RChild)
                 : SampleAccuracy(node.Array);
         }
@@ -389,7 +389,7 @@ namespace iris
         {
             if (node != null)
             {
-                if (!_tree.isLeafNode(node))
+                if (!_tree.IsLeafNode(node))
                 {
                     if (!root)
                     {
