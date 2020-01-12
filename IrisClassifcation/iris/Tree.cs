@@ -95,7 +95,7 @@ namespace iris
             {
                 if (gap != 0)
                 {
-                    if (node.Array is double[,])
+                    if (node.Array != null)
                     {
                         var median = Model.CorrectedMedian(Model.GetColumn(node.Array, node.DivisionVar));
                         Console.WriteLine("|- Accuracy : " + fnAccuracy(node) + " / Individuals count :" +
