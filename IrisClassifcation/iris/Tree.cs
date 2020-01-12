@@ -115,7 +115,8 @@ namespace iris
                 {
                     if (node.Array is double[,])
                     {
-                        Console.WriteLine("|- Accuracy : " + fnAccuracy(node)+ " / Individuals count :"+node.Array.GetLength(0));
+                        Console.WriteLine("|- Accuracy : " + fnAccuracy(node) + " / Individuals count :" +
+                                          node.Array.GetLength(0) + " / X" + node.DivisionVar + " ");
                     }
                 }
                 else
