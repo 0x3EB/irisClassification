@@ -8,24 +8,24 @@ namespace iris
 {
     public class Tree<T>
     {
-        private Node<T> root;
+        private Node<T> _root;
 
         public Tree(Node<T> aa)
         {
-            this.root = aa;
+            this._root = aa;
         }
 
         public Tree()
         {
-            this.root = null;
+            this._root = null;
         }
 
         public Node<T> Root
         {
-            get { return root; }
-            set { root = value; }
+            get { return _root; }
+            set { _root = value; }
         }
-
+        
         public Node<T> CreateNode(T[,] val) => new Node<T>(val, null, null);
 
         public bool AddLChild(Node<T> parent, Node<T> child)
@@ -58,7 +58,7 @@ namespace iris
             return association;
         }
 
-        public bool isLeafNode(Node<double> node)
+        public bool IsLeafNode(Node<double> node)
         {
             bool leaf = false;
             if (node != null)
@@ -126,7 +126,7 @@ namespace iris
                     Console.WriteLine(fnAccuracy(node));
                 }
 
-                if (!isLeafNode(node))
+                if (!IsLeafNode(node))
                 {
                     gap++;
                     HierarchyPrint(node.LChild, gap, fnAccuracy);
@@ -186,7 +186,7 @@ namespace iris
 
         public int NbLeaf(Node<double> parent)
         {
-            if (isLeafNode(parent))
+            if (IsLeafNode(parent))
             {
                 return 1;
             }
@@ -214,7 +214,7 @@ namespace iris
 
         public int Height(Node<double> node)
         {
-            if (isLeafNode(node))
+            if (IsLeafNode(node))
             {
                 return 1;
             }

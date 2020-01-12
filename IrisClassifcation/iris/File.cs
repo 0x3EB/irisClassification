@@ -1,91 +1,78 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace iris
 {
     public class File
     {
-        private readonly string _fileName;
+        private string _fileName;
 
-        /// <summary>
-        /// Constructor of File Class
-        /// </summary>
-        /// <param name="filename"></param>
         public File(string filename)
         {
-            _fileName = filename;
+            this._fileName = filename;
         }
 
-        /// <summary>
-        /// Return if ur system is Windows or not
-        /// </summary>
-        private static bool IsWindows => YourPlatform == PlatformID.Win32NT ||
-                                         YourPlatform == PlatformID.Win32Windows || YourPlatform == PlatformID.Win32S ||
-                                         YourPlatform == PlatformID.WinCE;
-
-        /// <summary>
-        /// Get your platformID
-        /// </summary>
-        private static PlatformID YourPlatform => Environment.OSVersion.Platform;
-
-        /// <summary>
-        /// Get the first line to set the 2D array properly
-        /// </summary>
-        /// <returns>Return the First line of the file</returns>
-        private string GetFirstLine()
+        public File()
         {
-            return System.IO.File.ReadLines(_fileName).First();
+            this._fileName = null;
         }
 
-        /// <summary>
-        /// get the number of line fo the text file
-        /// </summary>
-        /// <returns>return number into int</returns>
-        public int GetNbLine()
+        public string FileName
         {
-            var firstSpaceIndex = GetFirstLine().IndexOf(' ');
-            return Convert.ToInt32(GetFirstLine().Substring(0, firstSpaceIndex)) + 1;
+            get { return _fileName; }
+            set { _fileName = value; }
         }
 
-        /// <summary>
-        /// Get the number of column of the text file
-        /// </summary>
-        /// <returns>>return number into int</returns>
-        public int GetNbCol()
+        private string getFirstLine()
         {
-            var firstSpaceIndex = GetFirstLine().IndexOf(' ');
-            return Convert.ToInt32(GetFirstLine().Substring(firstSpaceIndex));
+            return System.IO.File.ReadLines(this._fileName).First();
         }
 
-        /// <summary>
-        /// Set 2D array with correct dimension and store all the data into it. 
-        /// </summary>
-        /// <returns>Return 2D array with all the lines of file</returns>
+        public int getNbLine()
+        {
+            var firstSpaceIndex = getFirstLine().IndexOf(" ");
+            return Convert.ToInt32(getFirstLine().Substring(0, firstSpaceIndex)) + 1;
+        }
+
+        public int getNbCol()
+        {
+            var firstSpaceIndex = getFirstLine().IndexOf(" ");
+            return Convert.ToInt32(getFirstLine().Substring(firstSpaceIndex));
+        }
+
         public double[,] GetFile()
         {
-            var input = System.IO.File.ReadAllText(_fileName);
+            String input = System.IO.File.ReadAllText(this._fileName);
             // Remove the first line, as it's not part of the sample
             input = input.Substring(input.IndexOf('\n') + 1);
             int i = 0, j = 0;
-            var result = new double[GetNbLine() - 1, GetNbCol()];
+            double[,] result = new double[getNbLine() - 1, getNbCol()];
             foreach (var row in input.Split('\n'))
             {
                 j = 0;
-                var numb = -1.0;
+                double numb = -1.0;
                 foreach (var col in row.Trim().Split(' '))
                 {
-                    var containDotOrComma = col.Contains(',') || col.Contains('.');
+                    bool containDotOrComma = col.Contains(',') || col.Contains('.');
                     try
                     {
                         numb = double.Parse(col.Trim());
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         if (containDotOrComma)
-                            // Replace . with , for windows and , with . for Unix
-                            numb = IsWindows
+                        {
+                            numb = (IsWindows)
                                 ? double.Parse(col.Trim().Replace('.', ','))
                                 : double.Parse(col.Trim().Replace(',', '.'));
+                        }
                     }
 
                     if (col.Trim() != "" && col.Trim() != " " && col.Trim() != null)
@@ -100,5 +87,28 @@ namespace iris
 
             return result;
         }
+
+        public double[] GetDoubleCol(int col)
+        {
+            double[] vals = new double[getNbLine()];
+            for (int i = 0; i < getNbLine() - 1; i++)
+            {
+                vals[i] = GetFile()[i, col];
+            }
+
+            return vals;
+        }
+
+        private static bool IsUnix => YourPlatformId == 4 || YourPlatformId == 6 || YourPlatformId == 128 ||
+                                      YourPlatform == PlatformID.Unix;
+
+        private static bool IsWindows => YourPlatform == PlatformID.Win32NT ||
+                                         YourPlatform == PlatformID.Win32Windows || YourPlatform == PlatformID.Win32S ||
+                                         YourPlatform == PlatformID.WinCE;
+
+        private static OperatingSystem YourOs => Environment.OSVersion;
+        private static int YourPlatformId => (int) YourPlatform;
+        private static PlatformID YourPlatform => Environment.OSVersion.Platform;
+        private static Version YourVersion => YourOs.Version;
     }
 }

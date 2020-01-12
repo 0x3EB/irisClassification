@@ -1,28 +1,38 @@
-﻿namespace iris
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace iris
 {
-    internal class Top<T>
+    class Top<T>
     {
-        private Top<T> _lChild;
-        private Top<T> _rChild;
+        private T value;
+        private Top<T> _lchild;
+        private Top<T> _rchild;
+        private Top<T> _parent;
 
-        public Top(Top<T> parent, T value, Top<T> lChild, Top<T> rChild)
+        public Top(Top<T> parent, T value, Top<T> Lchild, Top<T> Rchild)
         {
-            Parent = parent;
-            Value = value;
-            _lChild = lChild;
-            _rChild = rChild;
+            this._parent = parent;
+            this.value = value;
+            this._lchild = Lchild;
+            this._rchild = Rchild;
         }
-
-        public T Value { get; }
-
-        public Top<T> Parent { get; }
-
+        public T Value
+        {
+            get { return value; }
+        }
+        public Top<T> Parent
+        {
+            get { return _parent; }
+        }
         public Top<T> LChild
         {
             get { return LChild; }
             set { LChild = value; }
         }
-
         public Top<T> RChild
         {
             get { return RChild; }
