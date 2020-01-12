@@ -28,8 +28,8 @@ namespace iris
         public Model(string fileName)
         {
             var file = new File(fileName);
-            Individuals = file.getNbLine();
-            Features = file.getNbCol();
+            Individuals = file.GetNbLine();
+            Features = file.GetNbCol();
             _tree = new Tree<double>(new Node<double>(file.GetFile(), null, null));
         }
 
