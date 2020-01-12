@@ -184,7 +184,7 @@ namespace iris
         }
 
         // Return the columnNumber column of matrix
-        private static double[] GetColumn(double[,] matrix, int columnNumber)
+        public static double[] GetColumn(double[,] matrix, int columnNumber)
         {
             return Enumerable.Range(0, matrix.GetLength(0))
                 .Select(x => matrix[x, columnNumber])
@@ -192,7 +192,7 @@ namespace iris
         }
 
         // Return the corrected median of tab sample
-        private static double CorrectedMedian(double[] tab)
+        public static double CorrectedMedian(double[] tab)
         {
             var copyTab = new double[tab.Length];
             Array.Copy(tab, copyTab, tab.Length);
@@ -339,7 +339,7 @@ namespace iris
             }
         }
 
-        private static string CharOfOperation(double medianParent, Node<double> node)
+        public static string CharOfOperation(double medianParent, Node<double> node)
         {
             if (medianParent > CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
                 return ">";
