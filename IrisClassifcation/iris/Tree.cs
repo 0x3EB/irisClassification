@@ -14,7 +14,7 @@ namespace iris
             Root = null;
         }
 
-        public Node<T> Root { get; set; }
+        public Node<T> Root { get; }
 
         public Node<T> CreateNode(T[,] val)
         {
