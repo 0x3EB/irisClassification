@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace iris
+﻿namespace iris
 {
     public class Node<T>
     {
@@ -14,23 +8,24 @@ namespace iris
             LChild = lChild;
             RChild = rChild;
         }
+
         /// <summary>
-        /// Getter for the value of the node
+        ///     Getter for the value of the node
         /// </summary>
         public T[,] Array { get; }
-        
+
         /// <summary>
-        /// Number of the column used for the best division
+        ///     Number of the column used for the best division
         /// </summary>
         public int DivisionVar { get; set; }
 
         /// <summary>
-        /// Getter and Setter for the Left Child of the Node
+        ///     Getter and Setter for the Left Child of the Node
         /// </summary>
         public Node<T> LChild { get; set; }
 
         /// <summary>
-        /// Getter and Setter for the Right Child of the Node
+        ///     Getter and Setter for the Right Child of the Node
         /// </summary>
         public Node<T> RChild { get; set; }
     }
