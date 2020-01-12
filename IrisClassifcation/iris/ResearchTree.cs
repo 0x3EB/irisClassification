@@ -158,10 +158,7 @@ namespace iris
             }
             else
             {
-                if (val > top.Value)
-                    InsertionSommet(top.RChild, val);
-                else
-                    InsertionSommet(top.LChild, val);
+                InsertionSommet(val > top.Value ? top.RChild : top.LChild, val);
             }
         }
     }
