@@ -1,73 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace iris
 {
     public class Tree<T>
     {
-        private Node<T> _root;
-
         public Tree(Node<T> aa)
         {
-            this._root = aa;
+            Root = aa;
         }
 
         public Tree()
         {
-            this._root = null;
+            Root = null;
         }
 
-        public Node<T> Root
+        public Node<T> Root { get; set; }
+
+        public Node<T> CreateNode(T[,] val)
         {
-            get { return _root; }
-            set { _root = value; }
+            return new Node<T>(val, null, null);
         }
-        
-        public Node<T> CreateNode(T[,] val) => new Node<T>(val, null, null);
 
         public bool AddLChild(Node<T> parent, Node<T> child)
         {
-            bool association = false;
+            var association = false;
             if (parent != null && child != null)
-            {
                 if (parent.LChild == null)
                 {
                     parent.LChild = child;
                     association = true;
                 }
-            }
 
             return association;
         }
 
         public bool AddRChild(Node<T> parent, Node<T> child)
         {
-            bool association = false;
+            var association = false;
             if (parent != null && child != null)
-            {
                 if (parent.RChild == null)
                 {
                     parent.RChild = child;
                     association = true;
                 }
-            }
 
             return association;
         }
 
         public bool IsLeafNode(Node<double> node)
         {
-            bool leaf = false;
+            var leaf = false;
             if (node != null)
-            {
                 if (node.RChild == null && node.LChild == null)
-                {
                     leaf = true;
-                }
-            }
 
             return leaf;
         }
@@ -104,10 +89,7 @@ namespace iris
 
         public void HierarchyPrint(Node<double> node, int gap, Func<Node<double>, double> fnAccuracy)
         {
-            for (int i = 0; i < gap; i++)
-            {
-                Console.Write(" ");
-            }
+            for (var i = 0; i < gap; i++) Console.Write(" ");
 
             if (node != null)
             {
@@ -142,12 +124,9 @@ namespace iris
 
         public static void Print2DArrays(T[,] tab)
         {
-            for (int i = 0; i < tab.GetLength(0); i++)
+            for (var i = 0; i < tab.GetLength(0); i++)
             {
-                for (int j = 0; j < tab.GetLength(1); j++)
-                {
-                    Console.Write(tab[i, j]);
-                }
+                for (var j = 0; j < tab.GetLength(1); j++) Console.Write(tab[i, j]);
 
                 Console.Write(Environment.NewLine + Environment.NewLine);
             }
@@ -155,18 +134,12 @@ namespace iris
 
         public int NbChildren(Node<T> parent)
         {
-            int nb = 0;
+            var nb = 0;
             if (parent != null)
             {
-                if (parent.LChild != null)
-                {
-                    nb++;
-                }
+                if (parent.LChild != null) nb++;
 
-                if (parent.RChild != null)
-                {
-                    nb++;
-                }
+                if (parent.RChild != null) nb++;
             }
 
             return nb;
@@ -175,58 +148,34 @@ namespace iris
         public int NbDescendant(Node<T> parent)
         {
             if (parent != null)
-            {
                 return NbChildren(parent) + NbDescendant(parent.RChild) + NbDescendant(parent.LChild);
-            }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
 
         public int NbLeaf(Node<double> parent)
         {
-            if (IsLeafNode(parent))
-            {
-                return 1;
-            }
+            if (IsLeafNode(parent)) return 1;
 
             if (parent != null)
-            {
                 return NbLeaf(parent.RChild) + NbLeaf(parent.LChild);
-            }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
 
         private int Max(int a, int b)
         {
-            int max = a;
-            if (a < b)
-            {
-                max = b;
-            }
+            var max = a;
+            if (a < b) max = b;
 
             return max;
         }
 
         public int Height(Node<double> node)
         {
-            if (IsLeafNode(node))
-            {
-                return 1;
-            }
+            if (IsLeafNode(node)) return 1;
 
             if (node != null)
-            {
                 return 1 + Max(Height(node.LChild), Height(node.RChild));
-            }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,22 +6,20 @@ namespace iris
 {
     public class Model
     {
-        private Tree<double> _tree;
-
-        // Default values
-        private int _irisType = NoIrisType;
-        private double _minAccuracy = 0.1;
-        private double _maxAccuracy = 0.9;
-        private int _minIndividuals = 10;
-        private int _maxTreeSize = 50;
         private const double Tolerance = 0.000001;
         private const int NoColumn = -1;
         private const int NoIrisType = -1;
-        private int Individuals { get; }
-        private int Features { get; }
+
+        // Default values
+        private int _irisType = NoIrisType;
+        private double _maxAccuracy = 0.9;
+        private int _maxTreeSize = 50;
+        private double _minAccuracy = 0.1;
+        private int _minIndividuals = 10;
+        private readonly Tree<double> _tree;
 
         /// <summary>
-        /// Constructor of Model
+        ///     Constructor of Model
         /// </summary>
         /// <param name="fileName"></param>
         public Model(string fileName)
@@ -34,7 +31,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Constructor of Model
+        ///     Constructor of Model
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="irisType"></param>
@@ -43,26 +40,28 @@ namespace iris
             _irisType = irisType;
         }
 
+        private int Individuals { get; }
+        private int Features { get; }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <returns>return _irisType</returns>
         public double GetIrisType()
         {
-            return this._irisType;
+            return _irisType;
         }
 
-       /// <summary>
-       /// Return the model tree
-       /// </summary>
-       /// <returns></returns>
+        /// <summary>
+        ///     Return the model tree
+        /// </summary>
+        /// <returns></returns>
         public Tree<double> GetTree()
         {
             return _tree;
         }
 
         /// <summary>
-        /// Prompt the user to enter parameters in order to build the tree
+        ///     Prompt the user to enter parameters in order to build the tree
         /// </summary>
         /// <param name="defaults"></param>
         public void AskParameters(bool defaults = false)
@@ -82,7 +81,7 @@ namespace iris
         }
 
         /// <summary>
-        ///  Prompt the user to enter test iris data
+        ///     Prompt the user to enter test iris data
         /// </summary>
         /// <returns></returns>
         public static double[] AskTestIris()
@@ -101,7 +100,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Build the tree according to the class properties
+        ///     Build the tree according to the class properties
         /// </summary>
         public void Build()
         {
@@ -114,7 +113,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Split a node in two children
+        ///     Split a node in two children
         /// </summary>
         /// <param name="node"></param>
         /// <exception cref="IrisTypeNotSetException"></exception>
@@ -144,11 +143,11 @@ namespace iris
         }
 
         /// <summary>
-        /// Split 'node.Value' using the observing variable offering the best division
-        /// Return a Tuple containing :
-        /// - column number used to split the node,
-        /// - left sub-sample
-        /// - right sub-sample
+        ///     Split 'node.Value' using the observing variable offering the best division
+        ///     Return a Tuple containing :
+        ///     - column number used to split the node,
+        ///     - left sub-sample
+        ///     - right sub-sample
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
@@ -180,9 +179,9 @@ namespace iris
         }
 
         /// <summary>
-        /// Split 2D array of node.Value in two subsets :
-        /// Item1 : 2D array with all the values of 'nbCol' <= to the corrected median of this column
-        /// Item2 : The remaining 2D array with all the values of 'nbCol' >= to the corrected median of this column
+        ///     Split 2D array of node.Value in two subsets :
+        ///     Item1 : 2D array with all the values of 'nbCol' <= to the corrected median of this column
+        ///     Item2 : The remaining 2D array with all the values of 'nbCol' >= to the corrected median of this column
         /// </summary>
         /// <param name="nbCol"></param>
         /// <param name="node"></param>
@@ -196,32 +195,23 @@ namespace iris
             subSamples[0] = new double[countLeft, node.Array.GetLength(1)];
             subSamples[1] = new double[node.Array.GetLength(0) - countLeft, node.Array.GetLength(1)];
             for (int i = 0, iLeft = 0, iRight = 0; i < node.Array.GetLength(0); ++i)
-            {
                 if (node.Array[i, nbCol] <= median)
                 {
-                    for (var j = 0; j < node.Array.GetLength(1); ++j)
-                    {
-                        subSamples[0][iLeft, j] = node.Array[i, j];
-                    }
+                    for (var j = 0; j < node.Array.GetLength(1); ++j) subSamples[0][iLeft, j] = node.Array[i, j];
 
                     ++iLeft;
                 }
                 else
                 {
-                    for (var j = 0; j < node.Array.GetLength(1); ++j)
-                    {
-                        subSamples[1][iRight, j] = node.Array[i, j];
-                    }
+                    for (var j = 0; j < node.Array.GetLength(1); ++j) subSamples[1][iRight, j] = node.Array[i, j];
 
                     ++iRight;
                 }
-            }
 
             return subSamples;
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="matrix"></param>
         /// <param name="columnNumber"></param>
@@ -234,7 +224,6 @@ namespace iris
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="tab"></param>
         /// <returns>Return the corrected median of tab sample</returns>
@@ -244,16 +233,16 @@ namespace iris
             Array.Copy(tab, copyTab, tab.Length);
             Array.Sort(copyTab);
 
-            var midIndex = (copyTab.Length % 2 == 0)
-                ? (copyTab.Length / 2) - 1
-                : ((copyTab.Length + 1) / 2) - 1;
+            var midIndex = copyTab.Length % 2 == 0
+                ? copyTab.Length / 2 - 1
+                : (copyTab.Length + 1) / 2 - 1;
 
-            var median = (copyTab.Length % 2 == 0)
+            var median = copyTab.Length % 2 == 0
                 ? copyTab[midIndex] + copyTab[midIndex + 1] / 2
                 : copyTab[midIndex];
 
             return
-                (Math.Abs(median - copyTab.Last()) > Tolerance)
+                Math.Abs(median - copyTab.Last()) > Tolerance
                     ? median
                     : tab[copyTab.Length - 2];
         }
@@ -263,14 +252,11 @@ namespace iris
         {
             do
             {
-                if (message != null)
-                {
-                    Console.WriteLine(message);
-                }
+                if (message != null) Console.WriteLine(message);
 
                 var res = Convert.ToInt32(Console.ReadLine());
-                if ((positive && res < 0) || (negative && res > 0) ||
-                    ((!positive && !negative) && (res < min || res > max)))
+                if (positive && res < 0 || negative && res > 0 ||
+                    !positive && !negative && (res < min || res > max))
                 {
                     Console.WriteLine(err);
                     continue;
@@ -285,14 +271,11 @@ namespace iris
         {
             do
             {
-                if (message != null)
-                {
-                    Console.WriteLine(message);
-                }
+                if (message != null) Console.WriteLine(message);
 
                 var res = Convert.ToDouble(Console.ReadLine());
-                if ((positive && res < 0) || (negative && res > 0) ||
-                    ((!positive && !negative) && (res < min || res > max)))
+                if (positive && res < 0 || negative && res > 0 ||
+                    !positive && !negative && (res < min || res > max))
                 {
                     Console.WriteLine(err);
                     continue;
@@ -303,7 +286,6 @@ namespace iris
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="node"></param>
         /// <returns>Return true if node.Value can divided, false otherwise</returns>
@@ -320,7 +302,6 @@ namespace iris
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <returns>Return true if the max tree size has been reached</returns>
         private bool IsMaxHeightReached()
@@ -329,7 +310,6 @@ namespace iris
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="tab"></param>
         /// <returns>Return accuracy of tab sample</returns>
@@ -337,16 +317,14 @@ namespace iris
         {
             var nbIrisType = 0;
             for (var i = 0; i < tab.GetLength(0); i++)
-            {
                 if (Math.Abs(tab[i, 0] - _irisType) < Tolerance)
                     nbIrisType++;
-            }
 
-            return nbIrisType / (double) (tab.GetLength(0));
+            return nbIrisType / (double) tab.GetLength(0);
         }
 
         /// <summary>
-        /// Method for displaying the all tree with the accuracy, nb of individuals, 
+        ///     Method for displaying the all tree with the accuracy, nb of individuals,
         /// </summary>
         /// <param name="gap"></param>
         public void DisplayTree(int gap)
@@ -355,7 +333,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Method for displaying the tree height
+        ///     Method for displaying the tree height
         /// </summary>
         public void DisplayTreeHeight()
         {
@@ -363,7 +341,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Method for displaying the tree width
+        ///     Method for displaying the tree width
         /// </summary>
         public void DisplayTreeWidth()
         {
@@ -371,7 +349,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Method for displaying the prediction of the selected type
+        ///     Method for displaying the prediction of the selected type
         /// </summary>
         /// <param name="newIris"></param>
         public void DisplayPredict(double[] newIris)
@@ -380,7 +358,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Can display all the Leafs (with the path,Leaf Accuracy, and individuals count for each leaf)
+        ///     Can display all the Leafs (with the path,Leaf Accuracy, and individuals count for each leaf)
         /// </summary>
         /// <param name="node"></param>
         /// <param name="medianOfParent"></param>
@@ -392,14 +370,10 @@ namespace iris
                 if (!_tree.IsLeafNode(node))
                 {
                     if (!root)
-                    {
                         Console.Write(" X" + (node.DivisionVar + 1) + CharOfOperation(medianOfParent, node) +
                                       medianOfParent + " - ");
-                    }
                     else
-                    {
                         Console.Write("PATH : ROOT - ");
-                    }
 
                     Leafs(node.LChild, CorrectedMedian(GetColumn(node.Array, node.DivisionVar)), false);
                     Leafs(node.RChild, CorrectedMedian(GetColumn(node.Array, node.DivisionVar)), false);
@@ -416,7 +390,6 @@ namespace iris
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="medianParent"></param>
         /// <param name="node"></param>
@@ -425,16 +398,15 @@ namespace iris
         {
             if (medianParent > CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
                 return ">";
-            else if (medianParent >= CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
+            if (medianParent >= CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
                 return ">=";
-            else if (medianParent < CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
+            if (medianParent < CorrectedMedian(GetColumn(node.Array, node.DivisionVar)))
                 return "<";
-            else
-                return "=<";
+            return "=<";
         }
 
         /// <summary>
-        /// Method for displaying all the leafs 
+        ///     Method for displaying all the leafs
         /// </summary>
         public void DisplayLeafs()
         {
