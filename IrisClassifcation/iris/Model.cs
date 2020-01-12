@@ -10,8 +10,9 @@ namespace iris
         private const int NoColumn = -1;
         private const int NoIrisType = -1;
 
-        // Default values
         private int _irisType = NoIrisType;
+
+        // Found to be good default values
         private double _maxAccuracy = 0.9;
         private int _maxTreeSize = 50;
         private double _minAccuracy = 0.1;
@@ -100,20 +101,25 @@ namespace iris
         }
 
         /// <summary>
-        ///     Build the tree according to the class properties
+        ///     Wrapper exposing tree building
         /// </summary>
         public void Build()
         {
             Build(_tree.Root);
         }
 
+        /// <summary>
+        /// Wrapper exposing iris prediction
+        /// </summary>
+        /// <param name="newIris"></param>
+        /// <returns></returns>
         private double Predict(double[] newIris)
         {
             return Predict(newIris, _tree.Root);
         }
 
         /// <summary>
-        ///     Split a node in two children
+        ///     Build the tree according to the class properties
         /// </summary>
         /// <param name="node"></param>
         /// <exception cref="IrisTypeNotSetException"></exception>
@@ -131,6 +137,12 @@ namespace iris
             Build(node.RChild);
         }
 
+        /// <summary>
+        /// Return the accuracy of a new iris data to be belong to the iris class the tree was built for 
+        /// </summary>
+        /// <param name="newIris"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
         private double Predict(IReadOnlyList<double> newIris, Node<double> node)
         {
             var median = CorrectedMedian(GetColumn(node.Array, node.DivisionVar));
@@ -141,14 +153,15 @@ namespace iris
         }
 
         /// <summary>
-        ///     Split 'node.Value' using the observing variable offering the best division
-        ///     Return a Tuple containing :
+        ///     Split node value using the observing variable offering the best division
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>
+        ///    Return a Tuple containing :
         ///     - column number used to split the node,
         ///     - left sub-sample
         ///     - right sub-sample
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
+        /// </returns>
         private Tuple<int, double[,], double[,]> BestSubSamples(Node<double> node)
         {
             var column = NoColumn;
@@ -245,6 +258,16 @@ namespace iris
                     : tab[copyTab.Length - 2];
         }
 
+        /// <summary>
+        /// Check user input when looking for an integer
+        /// </summary>
+        /// <param name="err"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <param name="negative"></param>
+        /// <param name="positive"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static int CheckInt(string err = "Wrong value", int min = 0, int max = 0, bool negative = false,
             bool positive = false, string message = null)
         {
@@ -264,6 +287,16 @@ namespace iris
             } while (true);
         }
 
+        /// <summary>
+        /// Check user input when looking for a double
+        /// </summary>
+        /// <param name="err"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <param name="negative"></param>
+        /// <param name="positive"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         private static double CheckDouble(string err = "Wrong value", int min = 0, int max = 0, bool negative = false,
             bool positive = false, string message = null)
         {
@@ -284,6 +317,7 @@ namespace iris
         }
 
         /// <summary>
+        /// Return true if sample can be divided
         /// </summary>
         /// <param name="node"></param>
         /// <returns>Return true if node.Value can divided, false otherwise</returns>
@@ -300,6 +334,7 @@ namespace iris
         }
 
         /// <summary>
+        /// Return true if _maxTreeSize is reached
         /// </summary>
         /// <returns>Return true if the max tree size has been reached</returns>
         private bool IsMaxHeightReached()
@@ -308,6 +343,7 @@ namespace iris
         }
 
         /// <summary>
+        /// Return the accuracy of the given sample
         /// </summary>
         /// <param name="tab"></param>
         /// <returns>Return accuracy of tab sample</returns>
@@ -388,6 +424,7 @@ namespace iris
         }
 
         /// <summary>
+        /// Return the operator string when comparing current node median with its parent one 
         /// </summary>
         /// <param name="medianParent"></param>
         /// <param name="node"></param>
