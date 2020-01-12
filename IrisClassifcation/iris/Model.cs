@@ -109,7 +109,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Wrapper exposing iris prediction
+        ///     Wrapper exposing iris prediction
         /// </summary>
         /// <param name="newIris"></param>
         /// <returns></returns>
@@ -138,7 +138,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Return the accuracy of a new iris data to be belong to the iris class the tree was built for 
+        ///     Return the accuracy of a new iris data to be belong to the iris class the tree was built for 
         /// </summary>
         /// <param name="newIris"></param>
         /// <param name="node"></param>
@@ -223,10 +223,13 @@ namespace iris
         }
 
         /// <summary>
+        ///     Extract a column from a matrix
         /// </summary>
         /// <param name="matrix"></param>
         /// <param name="columnNumber"></param>
-        /// <returns>Return the columnNumber column of matrix</returns>
+        /// <returns>
+        ///     Return the columnNumber column of matrix
+        /// </returns>
         public static double[] GetColumn(double[,] matrix, int columnNumber)
         {
             return Enumerable.Range(0, matrix.GetLength(0))
@@ -235,9 +238,12 @@ namespace iris
         }
 
         /// <summary>
+        ///     Compute the corrected median of a sample
         /// </summary>
         /// <param name="tab"></param>
-        /// <returns>Return the corrected median of tab sample</returns>
+        /// <returns>
+        ///     Return the corrected median of tab sample
+        /// </returns>
         public static double CorrectedMedian(double[] tab)
         {
             var copyTab = new double[tab.Length];
@@ -259,7 +265,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Check user input when looking for an integer
+        ///     Check user input when looking for an integer
         /// </summary>
         /// <param name="err"></param>
         /// <param name="min"></param>
@@ -267,7 +273,9 @@ namespace iris
         /// <param name="negative"></param>
         /// <param name="positive"></param>
         /// <param name="message"></param>
-        /// <returns></returns>
+        /// <returns>
+        ///     Return typed integer following the given rules
+        /// </returns>
         public static int CheckInt(string err = "Wrong value", int min = 0, int max = 0, bool negative = false,
             bool positive = false, string message = null)
         {
@@ -288,7 +296,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Check user input when looking for a double
+        ///     Check user input when looking for a double
         /// </summary>
         /// <param name="err"></param>
         /// <param name="min"></param>
@@ -296,7 +304,9 @@ namespace iris
         /// <param name="negative"></param>
         /// <param name="positive"></param>
         /// <param name="message"></param>
-        /// <returns></returns>
+        /// <returns>
+        ///     Return the typed double following the given rules
+        /// </returns>
         private static double CheckDouble(string err = "Wrong value", int min = 0, int max = 0, bool negative = false,
             bool positive = false, string message = null)
         {
@@ -317,7 +327,7 @@ namespace iris
         }
 
         /// <summary>
-        /// Return true if sample can be divided
+        ///     Return true if sample can be divided
         /// </summary>
         /// <param name="node"></param>
         /// <returns>Return true if node.Value can divided, false otherwise</returns>
@@ -334,19 +344,23 @@ namespace iris
         }
 
         /// <summary>
-        /// Return true if _maxTreeSize is reached
+        ///     Return true if _maxTreeSize is reached
         /// </summary>
-        /// <returns>Return true if the max tree size has been reached</returns>
+        /// <returns>
+        ///     Return true if the max tree size has been reached
+        /// </returns>
         private bool IsMaxHeightReached()
         {
             return _tree.Height(_tree.Root) >= _maxTreeSize;
         }
 
         /// <summary>
-        /// Return the accuracy of the given sample
+        ///     Return the accuracy of the given sample
         /// </summary>
         /// <param name="tab"></param>
-        /// <returns>Return accuracy of tab sample</returns>
+        /// <returns>
+        ///     Return accuracy of tab sample
+        /// </returns>
         private double SampleAccuracy(double[,] tab)
         {
             var nbIrisType = 0;
@@ -424,11 +438,13 @@ namespace iris
         }
 
         /// <summary>
-        /// Return the operator string when comparing current node median with its parent one 
+        ///     Return the operator string when comparing current node median with its parent one 
         /// </summary>
         /// <param name="medianParent"></param>
         /// <param name="node"></param>
-        /// <returns>return the char of math comparison </returns>
+        /// <returns>
+        ///     return the char of math comparison
+        /// </returns>
         public static string CharOfOperation(double medianParent, Node<double> node)
         {
             var median = CorrectedMedian(GetColumn(node.Array, node.DivisionVar));
